@@ -30,6 +30,7 @@ tests_require = [
     'sqlalchemy',
     'pyams_scheduler',
     'pyams_zmi',
+    'pyramid_tm',
     'pyramid_zcml',
     'webtest',
     'zope.exceptions',
