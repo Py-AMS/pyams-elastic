@@ -42,7 +42,7 @@ from pyams_zmi.interfaces.viewlet import IContextAddingsViewletManager
 
 __docformat__ = 'restructuredtext'
 
-from pyams_elastic import _
+from pyams_elastic import _  # pylint: disable=ungrouped-imports
 
 
 @adapter_config(name=get_interface_name(IElasticClientInfo),
@@ -65,8 +65,9 @@ class ElasticTaskFormInfo(GroupManager):
     fields = Fields(IElasticTaskInfo)
 
     def update_widgets(self, prefix=None):
-        super().update_widgets(prefix)
-        query = self.widgets.get('query')
+        """Widgets update method"""
+        super().update_widgets(prefix)  # pylint: disable=no-member
+        query = self.widgets.get('query')  # pylint: disable=no-member
         if query is not None:
             query.add_class('height-100')
             query.widget_css_class = 'editor height-300px'
@@ -74,7 +75,7 @@ class ElasticTaskFormInfo(GroupManager):
                 'ams-filename': 'query.json'
             }
             alsoProvides(query, IObjectData)
-        fields = self.widgets.get('log_fields')
+        fields = self.widgets.get('log_fields')  # pylint: disable=no-member
         if fields is not None:
             fields.rows = 5
 

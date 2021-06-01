@@ -215,10 +215,11 @@ class ElasticClientInfo(Persistent):
     timeout = FieldProperty(IElasticClientInfo['timeout'])
     timeout_retries = FieldProperty(IElasticClientInfo['timeout_retries'])
 
-    def __init__(self, data=None):
+    def __init__(self, data=None):  # pylint: disable=unused-argument
         super().__init__()
 
     def open(self):
+        """Open Elasticsearch client"""
         return Elasticsearch(self.servers,  # pylint: disable=invalid-name
                              use_ssl=self.use_ssl,
                              verify_certs=self.verify_certs,
@@ -249,7 +250,7 @@ class ElasticClient:
         self.transaction_manager = transaction_manager
         if using is not None:
             self.index = using.index
-            self.es = using.open()
+            self.es = using.open()  # pylint: disable=invalid-name
         else:
             self.index = index
             self.es = Elasticsearch(servers,  # pylint: disable=invalid-name

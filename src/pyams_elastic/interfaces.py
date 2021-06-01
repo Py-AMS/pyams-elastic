@@ -16,7 +16,7 @@ This module defines mail package interfaces.
 """
 
 from zope.interface import Interface
-from zope.schema import Bool, Float, Int, Password, TextLine
+from zope.schema import Bool, Float, Int, TextLine
 
 from pyams_utils.schema import TextLineListField
 

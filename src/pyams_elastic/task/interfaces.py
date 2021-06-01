@@ -21,12 +21,12 @@ from zope.schema import Object, Text, TextLine
 
 from pyams_elastic.interfaces import IElasticClientInfo
 from pyams_scheduler.interfaces import ITask
+from pyams_utils.schema import TextLineListField
 
 
 __docformat__ = 'restructuredtext'
 
-from pyams_elastic import _
-from pyams_utils.schema import TextLineListField
+from pyams_elastic import _  # pylint: disable=ungrouped-imports
 
 
 class IElasticTaskInfo(Interface):
@@ -55,8 +55,8 @@ class IElasticTaskInfo(Interface):
         expected = self.expected_results
         if expected:
             try:
-                if '-' in expected:
-                    mini, maxi = map(int, expected.split('-'))
+                if '-' in expected:  # pylint: disable=unsupported-membership-test
+                    mini, maxi = map(int, expected.split('-'))  # pylint: disable=no-member
                     if mini > maxi:
                         raise ValueError("Minimum value must be lower or equal to maximum value")
                 else:

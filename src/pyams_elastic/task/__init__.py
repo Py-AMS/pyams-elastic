@@ -32,7 +32,7 @@ from pyams_utils.factory import factory_config
 
 __docformat__ = 'restructuredtext'
 
-from pyams_elastic import _
+from pyams_elastic import _  # pylint: disable=ungrouped-imports
 
 
 @factory_config(IElasticTask)
@@ -47,9 +47,9 @@ class ElasticTask(Task):
     expected_results = FieldProperty(IElasticTask['expected_results'])
     log_fields = FieldProperty(IElasticTask['log_fields'])
 
-    def run(self, report, **kwargs):  # pylint: disable=unused-argument
+    def run(self, report, **kwargs):  # pylint: disable=unused-argument,too-many-locals,too-many-branches
         """Run Elasticsearch query task"""
-        try:
+        try:  # pylint: disable=too-many-nested-blocks
             client = ElasticClient(using=self.connection,
                                    use_transaction=False)
             try:
@@ -71,7 +71,7 @@ class ElasticTask(Task):
                         mini, maxi = map(int, expected.split('-'))
                     else:
                         mini = maxi = int(expected)
-                    if not (mini <= total <= maxi):
+                    if not mini <= total <= maxi:
                         if self.log_fields:
                             for hit in hits.hits:
                                 result = hit['_source']
