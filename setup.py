@@ -31,6 +31,7 @@ tests_require = [
     'pyams_scheduler',
     'pyams_zmi',
     'pyramid_zcml',
+    'webtest',
     'zope.exceptions',
     'zope.testrunner'
 ]
