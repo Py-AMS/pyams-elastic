@@ -1,0 +1,130 @@
+#
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2021-05-28 19:29+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 4.14\n"
+
+#: src/pyams_elastic/interfaces.py:29
+msgid "Servers"
+msgstr "Serveurs"
+
+#: src/pyams_elastic/interfaces.py:30
+msgid "Newline separated list of Elasticsearch servers URLs"
+msgstr ""
+"Liste des URLs des serveurs Elasticsearch ; vous pouvez indiquer un serveur par ligne, "
+"sous forme simplifiée (hostname:port) ou complète (https://username:password@hostname:port)"
+
+#: src/pyams_elastic/interfaces.py:35
+msgid "Use SSL?"
+msgstr "Utiliser SSL"
+
+#: src/pyams_elastic/interfaces.py:36
+msgid "If 'yes', use SSL for HTTP connection"
+msgstr "Si 'oui', utiliser SSL pour des connexions HTTPS"
+
+#: src/pyams_elastic/interfaces.py:40
+msgid "Verify certificates?"
+msgstr "Vérifier les certificats"
+
+#: src/pyams_elastic/interfaces.py:41
+msgid "If 'no', SSL certificates will not be verified"
+msgstr "Si 'non', les certificats SSL ne seront pas vérifiés"
+
+#: src/pyams_elastic/interfaces.py:45
+msgid "Index name"
+msgstr "Nom de l'index"
+
+#: src/pyams_elastic/interfaces.py:46
+msgid "Elasticsearch index name or pattern"
+msgstr ""
+"Vous pouvez indiquer un nom d'index, ou un motif comme dans \"hearbeat-*\""
+
+#: src/pyams_elastic/interfaces.py:49
+msgid "Timeout"
+msgstr "Délai d'attente"
+
+#: src/pyams_elastic/interfaces.py:50
+msgid "Request timeout, in seconds"
+msgstr "Délai d'attente de réponse aux requêtes, en secondes"
+
+#: src/pyams_elastic/interfaces.py:54
+msgid "Timeout retries"
+msgstr "Nouvelles tentatives"
+
+#: src/pyams_elastic/interfaces.py:55
+msgid ""
+"You can define the number of retries which can be done if a timeout occurs; "
+"setting this to 0 disable retries"
+msgstr ""
+"Si une requête échoue à cause d'un délai d'attente dépassé, vous pouvez indiquer le nombre "
+"de nouvelles tentatives qui pourront être effectuées"
+
+#: src/pyams_elastic/task/__init__.py:42
+msgid "Elasticsearch query"
+msgstr "Requête Elasticsearch"
+
+#: src/pyams_elastic/task/interfaces.py:35
+msgid "Elasticsearch connection"
+msgstr "Connexion Elasticsearch"
+
+#: src/pyams_elastic/task/interfaces.py:39
+msgid "Query"
+msgstr "Requête"
+
+#: src/pyams_elastic/task/interfaces.py:40
+msgid "Complete Elasticsearch query, in JSON format"
+msgstr "Texte de la requête Elasticsearch, au format JSON"
+
+#: src/pyams_elastic/task/interfaces.py:43
+msgid "Expected results count"
+msgstr "Nombre de résultats attendu"
+
+#: src/pyams_elastic/task/interfaces.py:44
+msgid ""
+"Number of expected results; you can enter a single number, or a range by "
+"entering two numbers separated by a dash; an error status will be returned "
+"if the number of results is not in the given range; if the input is left "
+"empty, all queries will return an error"
+msgstr ""
+"Nombre de résultats attendu ; vous pouvez indiquer un nombre entier, ou un intervalle en "
+"indiquant deux nombres entiers séparés par un tiret ; un statut d'erreur sera produit "
+"si le nombre de résultats n'est pas dans l'intervalle ; si la valeur est laissée vide, toutes "
+"les requêtes généreront une erreur"
+
+#: src/pyams_elastic/task/interfaces.py:65
+msgid ""
+"Expected results must be a single positive number, or two positive numbers "
+"separated by a dash"
+msgstr ""
+"Le nombre de résultats attendu doit être soit un nombre entier positif, soit un intervalle "
+"composé de deux nombres entiers séparés par un tiret"
+
+#: src/pyams_elastic/task/interfaces.py:68
+msgid "Log output fields"
+msgstr "Attributs du rapport d'erreur"
+
+#: src/pyams_elastic/task/interfaces.py:69
+msgid "List of results fields to include in task log output report"
+msgstr ""
+"Liste des champs présents dans le rapport d'erreur ; n'oubliez pas "
+"d'intégrer ces champs dans la liste des champs renvoyés par la requête !"
+
+#: src/pyams_elastic/task/zmi/__init__.py:64
+msgid "Elasticsearch task settings"
+msgstr "Requête Elasticsearch"
+
+#: src/pyams_elastic/task/zmi/__init__.py:89
+msgid "Add Elasticsearch query..."
+msgstr "Requête Elasticsearch"
