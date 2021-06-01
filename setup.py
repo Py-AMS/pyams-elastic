@@ -69,10 +69,12 @@ setup(name='pyams_elastic',
           # -*- Extra requirements: -*-
           'elasticsearch',
           'elasticsearch_dsl',
+          'persistent',
           'pyams_utils',
           'pyramid',
           'transaction',
           'zope.component',
-          'zope.interface'
+          'zope.interface',
+          'zope.schema'
       ],
       entry_points="")
