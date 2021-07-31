@@ -19,6 +19,7 @@ from zope.interface import Interface, alsoProvides, implementer
 
 from pyams_elastic.client import ElasticClientInfo
 from pyams_elastic.interfaces import IElasticClientInfo
+from pyams_elastic.task import ElasticTask
 from pyams_elastic.task.interfaces import IElasticTask, IElasticTaskInfo
 from pyams_form.ajax import ajax_form_config
 from pyams_form.field import Fields
@@ -30,7 +31,7 @@ from pyams_form.subform import InnerAddForm, InnerEditForm
 from pyams_layer.interfaces import IFormLayer, IPyAMSLayer
 from pyams_scheduler.interfaces import IScheduler, MANAGE_TASKS_PERMISSION
 from pyams_scheduler.zmi import SchedulerTasksTable
-from pyams_scheduler.zmi.task import BaseTaskAddForm, BaseTaskEditForm
+from pyams_scheduler.task.zmi import BaseTaskAddForm, BaseTaskEditForm
 from pyams_skin.viewlet.menu import MenuItem
 from pyams_utils.adapter import adapter_config
 from pyams_utils.factory import get_interface_name
@@ -98,6 +99,7 @@ class ElasticTaskAddForm(BaseTaskAddForm):
     """Elasticsearch task add form"""
 
     content_factory = IElasticTask
+    content_label = ElasticTask.label
 
 
 @adapter_config(name='elastic-task-info.form',
