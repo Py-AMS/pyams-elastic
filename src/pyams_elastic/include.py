@@ -15,12 +15,15 @@
 This module is used for Pyramid integration
 """
 
-__docformat__ = 'restructuredtext'
+import re
 
 from pyramid.settings import asbool
 
 from pyams_elastic.client import ElasticClient
 from pyams_elastic.interfaces import IElasticClient
+
+
+__docformat__ = 'restructuredtext'
 
 
 def client_from_config(settings, prefix='pyams_elastic.'):
@@ -72,8 +75,7 @@ def include_package(config):
     try:
         import pyams_zmi  # pylint: disable=import-outside-toplevel,unused-import
     except ImportError:
-        ignored.append('pyams_elastic.zmi')
-        ignored.append('pyams_elastic.task.zmi')
+        ignored.append(re.compile(r'pyams_elastic\..*\.zmi\.?.*').search)
 
     try:
         import pyams_scheduler  # pylint: disable=import-outside-toplevel,unused-import
