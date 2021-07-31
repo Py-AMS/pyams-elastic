@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.0
+-----
+ - updated task add and edit forms title
+ - updated package include scan
+
 1.0.0
 -----
  - initial release
