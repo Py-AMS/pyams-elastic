@@ -32,15 +32,16 @@ def client_from_config(settings, prefix='pyams_elastic.'):
 
     In typical Pyramid usage, you shouldn't use this directly: instead, just
     include ``pyams_elastic`` and use the :py:func:`get_client` function to get
-    access to the shared :py:class:`.client.ElasticClient` instance.
+    access to the shared :py:class:`.client.ElasticClient` instance (which is also
+    available using *request.elastic_client* notation).
     """
     return ElasticClient(
-        servers=settings.get(prefix + 'servers', ['elasticsearch:9200']),
-        index=settings[prefix + 'index'],
-        timeout=settings.get(prefix + 'timeout', 10.0),
-        timeout_retries=int(settings.get(prefix + 'timeout_retry', 0)),
-        use_transaction=asbool(settings.get(prefix + 'use_transaction', True)),
-        disable_indexing=settings.get(prefix + 'disable_indexing', False))
+        servers=settings.get(f'{prefix}servers', ['elasticsearch:9200']),
+        index=settings[f'{prefix}index'],
+        timeout=settings.get(f'{prefix}timeout', 10.0),
+        timeout_retries=int(settings.get(f'{prefix}timeout_retry', 0)),
+        use_transaction=asbool(settings.get(f'{prefix}use_transaction', True)),
+        disable_indexing=settings.get(f'{prefix}disable_indexing', False))
 
 
 def get_client(request):

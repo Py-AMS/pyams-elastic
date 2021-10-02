@@ -18,13 +18,11 @@ This module defines the main Elasticsearch client class.
 __docformat__ = 'restructuredtext'
 
 import logging
-from functools import wraps
 from pprint import pformat
 
-import transaction as zope_transaction
+import transaction
 from elasticsearch import Elasticsearch, NotFoundError
 from persistent import Persistent
-from transaction.interfaces import ISavepointDataManager
 from zope.component import getAdapters
 from zope.interface import implementer
 from zope.schema.fieldproperty import FieldProperty
@@ -34,6 +32,7 @@ from pyams_elastic.interfaces import IElasticClient, IElasticClientInfo, IElasti
     IElasticMappingExtension
 from pyams_elastic.query import ElasticQuery
 from pyams_utils.factory import factory_config
+from pyams_utils.transaction import TransactionClient, transactional
 
 
 LOGGER = logging.getLogger('PyAMS (elastic)')
@@ -80,128 +79,6 @@ CREATE_INDEX_SETTINGS.update({
     },
 })
 
-STATUS_ACTIVE = 'active'
-STATUS_CHANGED = 'changed'
-
-
-_CLIENT_STATE = {}
-
-
-class ElasticSavepoint:
-    """Elasticsearch savepoint"""
-
-    def __init__(self, dm):
-        self.dm = dm  # pylint: disable=invalid-name
-        self.saved = dm.client.uncommitted.copy()
-
-    def rollback(self):
-        """Savepoint rollback"""
-        self.dm.client.uncommitted = self.saved.copy()
-
-
-@implementer(ISavepointDataManager)
-class ElasticDataManager:
-    """Elasticsearch data manager"""
-
-    def __init__(self, client, transaction_manager):
-        self.client = client
-        self.transaction_manager = transaction_manager
-        t = transaction_manager.get()  # pylint: disable=invalid-name
-        t.join(self)
-        _CLIENT_STATE[id(client)] = STATUS_ACTIVE
-        self._reset()
-
-    def _reset(self):
-        """Data manager reset"""
-        LOGGER.debug('_reset(%s)', self)
-        self.client.uncommitted = []
-
-    def _finish(self):
-        """Data manager finish"""
-        LOGGER.debug('_finish(%s)', self)
-        client = self.client
-        del _CLIENT_STATE[id(client)]
-
-    def abort(self, transaction):  # pylint: disable=unused-argument
-        """Transaction abort"""
-        LOGGER.debug('abort(%s)', self)
-        self._reset()
-        self._finish()
-
-    def tpc_begin(self, transaction):  # pylint: disable=unused-argument
-        """Begin two-phases commit"""
-        LOGGER.debug('tpc_begin(%s)', self)
-
-    def commit(self, transaction):  # pylint: disable=unused-argument
-        """Transaction commit"""
-        LOGGER.debug('commit(%s)', self)
-
-    def tpc_vote(self, transaction):  # pylint: disable=unused-argument
-        """Two-phases commit vote"""
-        LOGGER.debug('tpc_vote(%s)', self)
-        # XXX: Ideally, we'd try to check the uncommitted queue and make sure
-        # everything looked ok. Not sure how we can do that, though.
-
-    def tpc_finish(self, transaction):  # pylint: disable=unused-argument
-        """Two-phases commit finish"""
-        # Actually persist the uncommitted queue.
-        LOGGER.debug('tpc_finish(%s)', self)
-        LOGGER.warning("running: %r", self.client.uncommitted)
-        for cmd, args, kwargs in self.client.uncommitted:
-            kwargs['immediate'] = True
-            getattr(self.client, cmd)(*args, **kwargs)
-        self._reset()
-        self._finish()
-
-    def tpc_abort(self, transaction):  # pylint: disable=unused-argument
-        """Two-phases commit abort"""
-        LOGGER.debug('tpc_abort()')
-        self._reset()
-        self._finish()
-
-    def sortKey(self):  # pylint: disable=invalid-name
-        """Data manager sort key getter"""
-        # NOTE: Ideally, we want this to sort *after* database-oriented data
-        # managers, like the SQLAlchemy one. The double tilde should get us
-        # to the end.
-        return '~~elasticsearch' + str(id(self))
-
-    def savepoint(self):
-        """Savepoint getter"""
-        return ElasticSavepoint(self)
-
-
-def join_transaction(client, transaction_manager):
-    """Join current transaction"""
-    client_id = id(client)
-    existing_state = _CLIENT_STATE.get(client_id, None)
-    if existing_state is None:
-        LOGGER.warning('client %s not found, setting up new data manager',
-                       client_id)
-        ElasticDataManager(client, transaction_manager)
-    else:
-        LOGGER.warning('client %s found, using existing data manager',
-                       client_id)
-        _CLIENT_STATE[client_id] = STATUS_CHANGED
-
-
-def transactional(f):  # pylint: disable=invalid-name
-    """Transactional functions wrapper"""
-
-    @wraps(f)
-    def transactional_inner(client, *args, **kwargs):
-        """Inner transaction wrapper"""
-        immediate = kwargs.pop('immediate', None)
-        if client.use_transaction:
-            if immediate:
-                return f(client, *args, **kwargs)
-            LOGGER.debug('enqueueing action: %s: %r, %r', f.__name__, args, kwargs)
-            join_transaction(client, client.transaction_manager)
-            client.uncommitted.append((f.__name__, args, kwargs))
-            return None
-        return f(client, *args, **kwargs)
-    return transactional_inner
-
 
 @factory_config(IElasticClientInfo)
 @implementer(IElasticClientInfo)
@@ -215,9 +92,6 @@ class ElasticClientInfo(Persistent):
     timeout = FieldProperty(IElasticClientInfo['timeout'])
     timeout_retries = FieldProperty(IElasticClientInfo['timeout_retries'])
 
-    def __init__(self, data=None):  # pylint: disable=unused-argument
-        super().__init__()
-
     def open(self):
         """Open Elasticsearch client"""
         return Elasticsearch(self.servers,  # pylint: disable=invalid-name
@@ -229,7 +103,7 @@ class ElasticClientInfo(Persistent):
 
 
 @implementer(IElasticClient)
-class ElasticClient:
+class ElasticClient(TransactionClient):
     """
     A handle for interacting with the Elasticsearch backend.
     """
@@ -242,12 +116,11 @@ class ElasticClient:
                  timeout_retries=0,
                  disable_indexing=False,
                  use_transaction=True,
-                 transaction_manager=zope_transaction.manager):
+                 transaction_manager=transaction.manager):
         # pylint: disable=too-many-arguments,unused-argument
+        super().__init__(use_transaction, transaction_manager)
         assert servers or using, "You must provide servers or connection info!"
         self.disable_indexing = disable_indexing
-        self.use_transaction = use_transaction
-        self.transaction_manager = transaction_manager
         if using is not None:
             self.index = using.index
             self.es = using.open()  # pylint: disable=invalid-name
