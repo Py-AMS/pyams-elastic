@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.2.1
+-----
+ - remove some Elasticsearch (> 7.15) deprecation warnings using named arguments
+
 1.2.0
 -----
  - use PyAMS_utils transaction manager
