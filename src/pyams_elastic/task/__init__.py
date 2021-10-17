@@ -55,7 +55,7 @@ class ElasticTask(Task):
             try:
                 report.write('Elasticsearch query output\n'
                              '==========================\n')
-                results = client.es.search(self.query,
+                results = client.es.search(body=self.query,
                                            index=self.connection.index)
                 hits = DotDict(results['hits'])
                 expected = self.expected_results

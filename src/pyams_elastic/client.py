@@ -149,18 +149,18 @@ class ElasticClient(TransactionClient):
         Ensure that the index exists on the ES server, and has up-to-date
         settings.
         """
-        exists = self.es.indices.exists(self.index)
+        exists = self.es.indices.exists(index=self.index)
         if recreate or not exists:
             if exists:
-                self.es.indices.delete(self.index)
-            self.es.indices.create(self.index,
+                self.es.indices.delete(index=self.index)
+            self.es.indices.create(index=self.index,
                                    body=dict(settings=settings or CREATE_INDEX_SETTINGS))
 
     def delete_index(self):
         """
         Delete the index on the ES server.
         """
-        self.es.indices.delete(self.index)
+        self.es.indices.delete(index=self.index)
 
     def get_mappings(self):  # pylint: disable=unused-argument
         """
@@ -231,7 +231,7 @@ class ElasticClient(TransactionClient):
         if self.disable_indexing:
             return
 
-        kwargs = dict(index=self.index, body=doc, id=id)
+        kwargs = dict(index=self.index, document=doc, id=id)
         if '__pipeline__' in doc:
             kwargs['pipeline'] = doc.pop('__pipeline__')
         self.es.index(**kwargs)
