@@ -53,12 +53,12 @@ class ElasticMixin:
 
 class ESMapping:
     """
-    ESMapping defines a tree-like DSL for building Elastic Search mappings.
+    ESMapping defines a tree-like DSL for building Elasticsearch mappings.
 
-    Calling dict(es_mapping_object) produces an Elastic Search mapping
+    Calling dict(es_mapping_object) produces an Elasticsearch mapping
     definition appropriate for pyes.
 
-    Applying an ESMapping to another object returns an Elastic Search document.
+    Applying an ESMapping to another object returns an Elasticsearch document.
     """
 
     def __init__(self, *args, **kwargs):
@@ -162,7 +162,7 @@ class ESField(ESProp):
     """
     A leaf property that doesn't emit a mapping definition.
 
-    This behavior is useful if you want to allow Elastic Search to
+    This behavior is useful if you want to allow Elasticsearch to
     automatically construct an appropriate mapping while indexing.
     """
 
