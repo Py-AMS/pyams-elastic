@@ -37,19 +37,24 @@ def client_from_config(settings, prefix='pyams_elastic.'):
     """
     return ElasticClient(
         servers=settings.get(f'{prefix}servers', ['elasticsearch:9200']),
+        use_ssl=asbool(settings.get(f'{prefix}use_ssl', False)),
+        verify_certs=asbool(settings.get(f'{prefix}verify_certs', True)),
         index=settings[f'{prefix}index'],
-        timeout=settings.get(f'{prefix}timeout', 10.0),
+        timeout=float(settings.get(f'{prefix}timeout', 10.0)),
         timeout_retries=int(settings.get(f'{prefix}timeout_retry', 0)),
         use_transaction=asbool(settings.get(f'{prefix}use_transaction', True)),
-        disable_indexing=settings.get(f'{prefix}disable_indexing', False))
+        disable_indexing=asbool(settings.get(f'{prefix}disable_indexing', False)))
 
 
-def get_client(request):
+def get_client(context):
     """
-    Get the registered Elasticsearch client. The supplied argument can be
+    Get the registered Elasticsearch client. The provided context argument can be
     either a ``Request`` instance or a ``Registry``.
     """
-    registry = request.registry
+    try:
+        registry = context.registry
+    except AttributeError:
+        registry = context
     return registry.queryUtility(IElasticClient)
 
 
