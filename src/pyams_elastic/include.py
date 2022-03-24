@@ -26,7 +26,7 @@ from pyams_elastic.interfaces import IElasticClient
 __docformat__ = 'restructuredtext'
 
 
-def client_from_config(settings, prefix='pyams_elastic.'):
+def client_from_config(settings, prefix='pyams_elastic.', **kwargs):
     """
     Instantiate and configure an Elasticsearch from settings.
 
@@ -34,16 +34,24 @@ def client_from_config(settings, prefix='pyams_elastic.'):
     include ``pyams_elastic`` and use the :py:func:`get_client` function to get
     access to the shared :py:class:`.client.ElasticClient` instance (which is also
     available using *request.elastic_client* notation).
+
+    When creating a client manually, you can provide additional settings; these arguments
+    will override settings defined into configuration file.
     """
+
+    def get_setting(name, default=None):
+        """Get setting from arguments or configuration file"""
+        return kwargs.get(name, settings.get(f'{prefix}{name}', default))
+
     return ElasticClient(
-        servers=settings.get(f'{prefix}servers', ['elasticsearch:9200']),
-        use_ssl=asbool(settings.get(f'{prefix}use_ssl', False)),
-        verify_certs=asbool(settings.get(f'{prefix}verify_certs', True)),
-        index=settings[f'{prefix}index'],
-        timeout=float(settings.get(f'{prefix}timeout', 10.0)),
-        timeout_retries=int(settings.get(f'{prefix}timeout_retry', 0)),
-        use_transaction=asbool(settings.get(f'{prefix}use_transaction', True)),
-        disable_indexing=asbool(settings.get(f'{prefix}disable_indexing', False)))
+        servers=get_setting('servers', ['elasticsearch:9200']),
+        use_ssl=asbool(get_setting('use_ssl', False)),
+        verify_certs=asbool(get_setting('verify_certs', True)),
+        index=get_setting('index'),
+        timeout=float(get_setting('timeout', 10.0)),
+        timeout_retries=int(get_setting('timeout_retry', 0)),
+        use_transaction=asbool(get_setting('use_transaction', True)),
+        disable_indexing=asbool(get_setting('disable_indexing', False)))
 
 
 def get_client(context):
