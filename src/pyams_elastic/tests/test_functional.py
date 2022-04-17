@@ -138,6 +138,132 @@ class TestClient(TestCase):
         query = self.client.query(Genre).match('title', 'Sci-Fi Romance')
         self.assertEqual(query.count(), 0)
 
+    def test_object_update(self):
+        genre = Genre(title='Sci-Fi Romance')
+        self.client.index_object(genre)
+        self.client.refresh()
+
+        genre.title = 'Sci-Fi Fantasy'
+        self.client.update_object(genre, ['title'])
+        self.client.refresh()
+
+        query = self.client.query(Genre).match('title', 'Sci-Fi Fantasy')
+        self.assertEqual(query.count(), 1)
+
+        self.client.delete_object(genre)
+        self.client.refresh()
+
+        query = self.client.query(Genre).match('title', 'Sci-Fi Fantasy')
+        self.assertEqual(query.count(), 0)
+
+    def test_document_update(self):
+        genre = Genre(title='Sci-Fi Romance')
+        self.client.index_object(genre)
+        self.client.refresh()
+
+        genre.title = 'Sci-Fi Fantasy'
+        self.client.update_document(genre.id, {
+            'title': genre.title
+        })
+        self.client.refresh()
+
+        query = self.client.query(Genre).match('title', 'Sci-Fi Fantasy')
+        self.assertEqual(query.count(), 1)
+
+        self.client.delete_object(genre)
+        self.client.refresh()
+
+        query = self.client.query(Genre).match('title', 'Sci-Fi Fantasy')
+        self.assertEqual(query.count(), 0)
+
+    def test_update_with_script(self):
+        genre = Genre(title='Sci-Fi Romance')
+        self.client.index_object(genre)
+        self.client.refresh()
+
+        genre.title = 'Sci-Fi Fantasy'
+        result, data = self.client.update_document(genre.id, script={
+            'source': "ctx._source.title = params.title",
+            'params': {
+                'title': genre.title
+            }
+        })
+        self.assertEqual(result, 'updated')
+
+        self.client.delete_object(genre)
+        self.client.refresh()
+
+        query = self.client.query(Genre).match('title', 'Sci-Fi Romance')
+        self.assertEqual(query.count(), 0)
+        query = self.client.query(Genre).match('title', 'Sci-Fi Fantasy')
+        self.assertEqual(query.count(), 0)
+
+    def test_update_with_args(self):
+        genre = Genre(title='Sci-Fi Romance')
+        self.client.index_object(genre)
+        self.client.refresh()
+
+        genre.title = 'Sci-Fi Fantasy'
+        result, data = self.client.update_document(genre.id, {
+            'title': genre.title
+        }, _source=['title'])
+        self.assertEqual(result, 'updated')
+        self.assertEqual(data.title, 'Sci-Fi Fantasy')
+
+        self.client.delete_object(genre)
+        self.client.refresh()
+
+        query = self.client.query(Genre).match('title', 'Sci-Fi Romance')
+        self.assertEqual(query.count(), 0)
+        query = self.client.query(Genre).match('title', 'Sci-Fi Fantasy')
+        self.assertEqual(query.count(), 0)
+
+    def test_noop_update(self):
+        genre = Genre(title='Sci-Fi Romance')
+        self.client.index_object(genre)
+        self.client.refresh()
+
+        result, data = self.client.update_document(genre.id, {
+            'title': genre.title
+        }, _source=['title'])
+        self.assertEqual(result, 'noop')
+        self.assertEqual(data.title, 'Sci-Fi Romance')
+
+        self.client.delete_object(genre)
+        self.client.refresh()
+
+        query = self.client.query(Genre).match('title', 'Sci-Fi Romance')
+        self.assertEqual(query.count(), 0)
+
+    def test_force_update(self):
+        genre = Genre(title='Sci-Fi Romance')
+        self.client.index_object(genre)
+        self.client.refresh()
+
+        result, data = self.client.update_document(genre.id, {
+            'title': genre.title
+        }, detect_noop=False, _source=['title'])
+        self.assertEqual(result, 'updated')
+        self.assertEqual(data.title, 'Sci-Fi Romance')
+
+        self.client.delete_object(genre)
+        self.client.refresh()
+
+        query = self.client.query(Genre).match('title', 'Sci-Fi Romance')
+        self.assertEqual(query.count(), 0)
+
+    def test_update_nonexisting_document(self):
+        with self.assertRaises(NotFoundError):
+            self.client.update_document(id=888, doc={
+                'title': "Missing document"
+            })
+
+    def test_update_nonexisting_document_safe(self):
+        result, data = self.client.update_document(id=888, doc={
+            'title': "Missing document"
+        }, safe=True)
+        self.assertEqual(result, 'notfound')
+
     def test_delete_nonexistent_document(self):
         with self.assertRaises(NotFoundError):
             self.client.delete_document(id=1337)

@@ -236,6 +236,42 @@ class ElasticClient(TransactionClient):
             kwargs['pipeline'] = doc.pop('__pipeline__')
         self.es.index(**kwargs)
 
+    def update_object(self, obj, attrs, **kw):
+        """
+        Update an indexed object with partial properties. You have to provide a list of
+        original Elasticsearch document attributes which will be updated
+        """
+        doc = obj.elastic_document()
+        doc_id = doc.pop("_id")
+        for key in list(doc.keys()):
+            if key not in attrs:
+                doc.pop(key)
+
+        LOGGER.debug('Updating object:\n%s', pformat(doc))
+        LOGGER.debug('ID is %r', doc_id)
+
+        return self.update_document(id=doc_id, doc=doc, **kw)
+
+    @transactional
+    def update_document(self, id, doc=None, script=None, safe=False, **kw):  # pylint: disable=invalid-name,redefined-builtin
+        """
+        Update an indexed document with new properties.
+        """
+        assert doc or script, "doc and script arguments can't both be null"
+        if self.disable_indexing:
+            return
+
+        body = {'script': script} if script else {'doc': doc}
+        body.update(kw)
+        kwargs = dict(index=self.index, id=id, body=body)
+        try:
+            result = self.es.update(**kwargs)
+            return result.get('result'), DotDict(result.get('get', {}).get('_source'))
+        except NotFoundError:
+            if not safe:
+                raise
+            return 'notfound', None
+
     def delete_object(self, obj, safe=False, **kw):
         """
         Delete the indexed document for an object.
