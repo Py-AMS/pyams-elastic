@@ -24,7 +24,7 @@ What is PyAMS elastic?
 ======================
 
 PyAMS_elastic is an extension package for PyAMS to provide support for Elasticsearch; it's a fork
-of *pyramid_es* package, adapted to use last Elasticsearch features anf Elasticsearch-DSL package
+of *pyramid_es* package, adapted to use last Elasticsearch features and Elasticsearch-DSL package
 (see `Elasticsearch <https://elasticsearch-py.readthedocs.io>` and `Elasticsearch-DSL
 <https://elasticsearch-dsl.readthedocs.io>`). It is also using more components of the components
 architecture.
@@ -33,13 +33,13 @@ Compared with *pyramid_es*, it's no more Python 2 compliant, and adds a few feat
 aggregations support in Elasticsearch queries. Deprecated Elasticsearch features have also been
 removed from package.
 
-A PyAMS scheduler task info is also provided by this package; it allows to run Elasticsearch
+A PyAMS scheduler task info is also provided by this package; it allows running Elasticsearch
 queries on a regular basis, and to send notifications if expected results are not received.
 
 
 Running PyAMS_elastic unit tests
 ================================
 
-Unit tests relies on a "elasticsearch" entry to be used with Gitlab-CI services. If you want to
+Unit tests relies on an "elasticsearch" entry to be used with Gitlab-CI services. If you want to
 run unit tests locally, you must have an entry in your "hosts" file pointing to your Elasticsearch
 server.

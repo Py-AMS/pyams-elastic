@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.3.0
+-----
+ - added SSL settings to client configuration
+ - added Elasticsearch update API support
+ - allow overriding of configuration file settings with named arguments when creating
+   custom Elasticsearch client
+ - added support for Python 3.10
+
 1.2.1
 -----
  - remove some Elasticsearch (> 7.15) deprecation warnings using named arguments
