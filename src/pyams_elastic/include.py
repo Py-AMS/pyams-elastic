@@ -17,7 +17,7 @@ This module is used for Pyramid integration
 
 import re
 
-from pyramid.settings import asbool
+from pyramid.settings import asbool, aslist
 
 from pyams_elastic.client import ElasticClient
 from pyams_elastic.interfaces import IElasticClient
@@ -44,12 +44,15 @@ def client_from_config(settings, prefix='pyams_elastic.', **kwargs):
         return kwargs.get(name, settings.get(f'{prefix}{name}', default))
 
     return ElasticClient(
-        servers=get_setting('servers', ['elasticsearch:9200']),
+        servers=aslist(get_setting('servers', ['elasticsearch:9200'])),
         use_ssl=asbool(get_setting('use_ssl', False)),
         verify_certs=asbool(get_setting('verify_certs', True)),
+        ca_certs=get_setting('ca_certs'),
+        client_cert=get_setting('client_cert'),
+        client_key=get_setting('client_key'),
         index=get_setting('index'),
         timeout=float(get_setting('timeout', 10.0)),
-        timeout_retries=int(get_setting('timeout_retry', 0)),
+        timeout_retries=int(get_setting('timeout_retries', 0)),
         use_transaction=asbool(get_setting('use_transaction', True)),
         disable_indexing=asbool(get_setting('disable_indexing', False)))
 

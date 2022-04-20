@@ -42,6 +42,19 @@ class IElasticClientInfo(Interface):
                         required=True,
                         default=True)
 
+    ca_certs = TextLine(title=_("CA certificates"),
+                        description=_("Path to certificates of certification authority"),
+                        required=False)
+
+    client_cert = TextLine(title=_("Client certificate"),
+                           description=_("Path to PEM file containing client certificate"),
+                           required=False)
+
+    client_key = TextLine(title=_("Client key"),
+                          description=_("Path to PEM file containing client key, if not "
+                                        "included with client certificate"),
+                          required=False)
+
     index = TextLine(title=_("Index name"),
                      description=_("Elasticsearch index name or pattern"),
                      required=True)

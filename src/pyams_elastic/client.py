@@ -88,6 +88,9 @@ class ElasticClientInfo(Persistent):
     servers = FieldProperty(IElasticClientInfo['servers'])
     use_ssl = FieldProperty(IElasticClientInfo['use_ssl'])
     verify_certs = FieldProperty(IElasticClientInfo['verify_certs'])
+    ca_certs = FieldProperty(IElasticClientInfo['ca_certs'])
+    client_cert = FieldProperty(IElasticClientInfo['client_cert'])
+    client_key = FieldProperty(IElasticClientInfo['client_key'])
     index = FieldProperty(IElasticClientInfo['index'])
     timeout = FieldProperty(IElasticClientInfo['timeout'])
     timeout_retries = FieldProperty(IElasticClientInfo['timeout_retries'])
@@ -97,6 +100,9 @@ class ElasticClientInfo(Persistent):
         return Elasticsearch(self.servers,  # pylint: disable=invalid-name
                              use_ssl=self.use_ssl,
                              verify_certs=self.verify_certs,
+                             ca_certs=self.ca_certs,
+                             client_cert=self.client_cert,
+                             client_key=self.client_key,
                              timeout=self.timeout,
                              retry_on_timeout=self.timeout_retries > 0,
                              max_retries=self.timeout_retries)
@@ -112,6 +118,9 @@ class ElasticClient(TransactionClient):
                  auth=None,
                  use_ssl=False,
                  verify_certs=True,
+                 ca_certs=None,
+                 client_cert=None,
+                 client_key=None,
                  timeout=10.0,
                  timeout_retries=0,
                  disable_indexing=False,
@@ -130,6 +139,9 @@ class ElasticClient(TransactionClient):
                                     auth=auth,
                                     use_ssl=use_ssl,
                                     verify_certs=verify_certs,
+                                    ca_certs=ca_certs,
+                                    client_cert=client_cert,
+                                    client_key=client_key,
                                     timeout=timeout,
                                     retry_on_timeout=timeout_retries > 0,
                                     max_retries=timeout_retries)
