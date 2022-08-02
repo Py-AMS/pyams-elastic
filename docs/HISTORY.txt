@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.4.1
+-----
+ - use new scheduler task execution status on failure
+
 1.4.0
 -----
  - added certificates management options when creating Elasticsearch client, available in
