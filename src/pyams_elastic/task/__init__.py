@@ -25,7 +25,7 @@ from zope.schema.fieldproperty import FieldProperty
 from pyams_elastic.client import ElasticClient
 from pyams_elastic.docdict import DotDict
 from pyams_elastic.task.interfaces import IElasticTask
-from pyams_scheduler.interfaces.task import TASK_STATUS_ERROR, TASK_STATUS_OK
+from pyams_scheduler.interfaces.task import TASK_STATUS_ERROR, TASK_STATUS_FAIL, TASK_STATUS_OK
 from pyams_scheduler.task import Task
 from pyams_utils.factory import factory_config
 
@@ -62,9 +62,9 @@ class ElasticTask(Task):
                 total = hits.total
                 if isinstance(total, DotDict):
                     total = total.value
-                report.write(' - expected results: {}\n'.format(expected or '--'))
-                report.write(' - total results: {}\n'.format(total))
-                report.write(' - query results: {}\n'.format(len(hits.hits)))
+                report.write(f" - expected results: {expected or '--'}\n")
+                report.write(f" - total results: {total}\n")
+                report.write(f" - query results: {len(hits.hits)}\n")
                 report.write('==========================\n')
                 if expected:
                     if '-' in expected:
@@ -80,9 +80,9 @@ class ElasticTask(Task):
                                     try:
                                         for attribute in field.split('.'):
                                             record = record[attribute]
-                                        report.write(' - {}: {}\n'.format(field, record))
+                                        report.write(f' - {field}: {record}\n')
                                     except KeyError:
-                                        report.write(' - {}: no value\n'.format(field))
+                                        report.write(f' - {field}: no value\n')
                                 report.write('==========================\n')
                         return TASK_STATUS_ERROR, results
                     return TASK_STATUS_OK, results
@@ -95,4 +95,4 @@ class ElasticTask(Task):
                          'An Elasticsearch error occurred\n'
                          '===============================\n')
             report.write(''.join(traceback.format_exception(etype, value, tb)))
-            return TASK_STATUS_ERROR, None
+            return TASK_STATUS_FAIL, None

@@ -27,7 +27,7 @@ from pyams_elastic.client import ElasticClient, ElasticClientInfo
 from pyams_elastic.task import ElasticTask
 from pyams_elastic.task.interfaces import IElasticTaskInfo
 from pyams_elastic.tests.data import Base, get_data
-from pyams_scheduler.interfaces.task import TASK_STATUS_ERROR, TASK_STATUS_OK
+from pyams_scheduler.interfaces.task import TASK_STATUS_ERROR, TASK_STATUS_FAIL, TASK_STATUS_OK
 
 
 class TestElasticTask(TestCase):
@@ -103,7 +103,17 @@ class TestElasticTask(TestCase):
         task.expected_results = '8'
         task.log_fields = ['title', 'missing.field']
 
+        # check for failure
+        task_info.servers = ['unknown_hostname:9200']
+        report = StringIO()
+        status, results = task.run(report)
+        self.assertEqual(status, TASK_STATUS_FAIL)
+        self.assertEqual(results, None)
+        report.close()
+
         # check for error
+        task_info.servers = ['elasticsearch:9200']
+
         report = StringIO()
         status, results = task.run(report)
         self.assertEqual(status, TASK_STATUS_ERROR)
