@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2022-04-19 19:04+0200\n"
+"POT-Creation-Date: 2022-11-09 15:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -101,14 +101,17 @@ msgid "Query"
 msgstr ""
 
 #: ./src/pyams_elastic/task/interfaces.py:40
-msgid "Complete Elasticsearch query, in JSON format"
+msgid ""
+"Complete Elasticsearch query, in JSON format; you can include dynamic "
+"fragments into your JSON code using PyAMS text renderers rules (see "
+"documentation)"
 msgstr ""
 
-#: ./src/pyams_elastic/task/interfaces.py:43
+#: ./src/pyams_elastic/task/interfaces.py:45
 msgid "Expected results count"
 msgstr ""
 
-#: ./src/pyams_elastic/task/interfaces.py:44
+#: ./src/pyams_elastic/task/interfaces.py:46
 msgid ""
 "Number of expected results; you can enter a single number, or a range by "
 "entering two numbers separated by a dash; an error status will be returned if"
@@ -116,21 +119,21 @@ msgid ""
 " all queries will return an error"
 msgstr ""
 
-#: ./src/pyams_elastic/task/interfaces.py:65
+#: ./src/pyams_elastic/task/interfaces.py:67
 msgid ""
 "Expected results must be a single positive number, or two positive numbers "
 "separated by a dash"
 msgstr ""
 
-#: ./src/pyams_elastic/task/interfaces.py:68
+#: ./src/pyams_elastic/task/interfaces.py:70
 msgid "Log output fields"
 msgstr ""
 
-#: ./src/pyams_elastic/task/interfaces.py:69
+#: ./src/pyams_elastic/task/interfaces.py:71
 msgid "List of results fields to include in task log output report"
 msgstr ""
 
-#: ./src/pyams_elastic/task/__init__.py:42
+#: ./src/pyams_elastic/task/__init__.py:43
 msgid "Elasticsearch query"
 msgstr ""
 

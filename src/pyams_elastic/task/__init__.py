@@ -28,6 +28,7 @@ from pyams_elastic.task.interfaces import IElasticTask
 from pyams_scheduler.interfaces.task import TASK_STATUS_ERROR, TASK_STATUS_FAIL, TASK_STATUS_OK
 from pyams_scheduler.task import Task
 from pyams_utils.factory import factory_config
+from pyams_utils.text import render_text
 
 
 __docformat__ = 'restructuredtext'
@@ -55,7 +56,7 @@ class ElasticTask(Task):
             try:
                 report.write('Elasticsearch query output\n'
                              '==========================\n')
-                results = client.es.search(body=self.query,
+                results = client.es.search(body=render_text(self.query),
                                            index=self.connection.index)
                 hits = DotDict(results['hits'])
                 expected = self.expected_results

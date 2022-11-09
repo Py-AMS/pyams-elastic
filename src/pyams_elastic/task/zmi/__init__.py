@@ -98,6 +98,8 @@ class ElasticTaskAddMenu(MenuItem):
 class ElasticTaskAddForm(BaseTaskAddForm):
     """Elasticsearch task add form"""
 
+    modal_class = 'modal-xl'
+
     content_factory = IElasticTask
     content_label = ElasticTask.label
 
@@ -113,6 +115,8 @@ class ElasticTaskAddFormInfo(ElasticTaskFormInfo, InnerAddForm):
                   permission=MANAGE_TASKS_PERMISSION)
 class ElasticTaskEditForm(BaseTaskEditForm):
     """Elasticsearch task edit form"""
+
+    modal_class = 'modal-xl'
 
 
 @adapter_config(name='elastic-task-info.form',

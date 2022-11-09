@@ -37,7 +37,9 @@ class IElasticTaskInfo(Interface):
                         required=True)
 
     query = Text(title=_("Query"),
-                 description=_("Complete Elasticsearch query, in JSON format"),
+                 description=_("Complete Elasticsearch query, in JSON format; you can include "
+                               "dynamic fragments into your JSON code using PyAMS "
+                               "text renderers rules (see documentation)"),
                  required=True)
 
     expected_results = TextLine(title=_("Expected results count"),

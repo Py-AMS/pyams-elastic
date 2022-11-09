@@ -1,11 +1,11 @@
-#
 # SOME DESCRIPTIVE TITLE
+#
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2022-04-19 19:04+0200\n"
+"POT-Creation-Date: 2022-11-09 15:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,8 +67,8 @@ msgid ""
 "Path to PEM file containing client key, if not included with client "
 "certificate"
 msgstr ""
-"Chemin d'accès à un fichier PEM contenant la clé du certificat du client, "
-"si elle n'est pas inclue avec le certificat du client"
+"Chemin d'accès à un fichier PEM contenant la clé du certificat du client, si "
+"elle n'est pas inclue avec le certificat du client"
 
 #: src/pyams_elastic/interfaces.py:58
 msgid "Index name"
@@ -108,14 +108,20 @@ msgid "Query"
 msgstr "Requête"
 
 #: src/pyams_elastic/task/interfaces.py:40
-msgid "Complete Elasticsearch query, in JSON format"
-msgstr "Texte de la requête Elasticsearch, au format JSON"
+msgid ""
+"Complete Elasticsearch query, in JSON format; you can include dynamic "
+"fragments into your JSON code using PyAMS text renderers rules (see "
+"documentation)"
+msgstr ""
+"Indiquez ici le contenu de la requête Elasticsearch, au format JSON ; vous pouvez intégrer "
+"des éléments dynamiques dans le code JSON en appliquant les règles des outils de "
+"formatage de texte proposés par PyAMS (Cf documentation)"
 
-#: src/pyams_elastic/task/interfaces.py:43
+#: src/pyams_elastic/task/interfaces.py:45
 msgid "Expected results count"
 msgstr "Nombre de résultats attendu"
 
-#: src/pyams_elastic/task/interfaces.py:44
+#: src/pyams_elastic/task/interfaces.py:46
 msgid ""
 "Number of expected results; you can enter a single number, or a range by "
 "entering two numbers separated by a dash; an error status will be returned "
@@ -128,7 +134,7 @@ msgstr ""
 "l'intervalle ; si la valeur est laissée vide, toutes les requêtes généreront "
 "une erreur"
 
-#: src/pyams_elastic/task/interfaces.py:65
+#: src/pyams_elastic/task/interfaces.py:67
 msgid ""
 "Expected results must be a single positive number, or two positive numbers "
 "separated by a dash"
@@ -136,17 +142,17 @@ msgstr ""
 "Le nombre de résultats attendu doit être soit un nombre entier positif, soit "
 "un intervalle composé de deux nombres entiers séparés par un tiret"
 
-#: src/pyams_elastic/task/interfaces.py:68
+#: src/pyams_elastic/task/interfaces.py:70
 msgid "Log output fields"
 msgstr "Attributs du rapport d'erreur"
 
-#: src/pyams_elastic/task/interfaces.py:69
+#: src/pyams_elastic/task/interfaces.py:71
 msgid "List of results fields to include in task log output report"
 msgstr ""
 "Liste des champs présents dans le rapport d'erreur ; n'oubliez pas "
 "d'intégrer ces champs dans la liste des champs renvoyés par la requête !"
 
-#: src/pyams_elastic/task/__init__.py:42
+#: src/pyams_elastic/task/__init__.py:43
 msgid "Elasticsearch query"
 msgstr "Requête Elasticsearch"
 
@@ -157,3 +163,6 @@ msgstr "Requête Elasticsearch"
 #: src/pyams_elastic/task/zmi/__init__.py:91
 msgid "Add Elasticsearch query..."
 msgstr "Requête Elasticsearch"
+
+#~ msgid "Complete Elasticsearch query, in JSON format"
+#~ msgstr "Texte de la requête Elasticsearch, au format JSON"
