@@ -23,7 +23,7 @@ DOCS = os.path.join(os.path.dirname(__file__),
 README = os.path.join(DOCS, 'README.txt')
 HISTORY = os.path.join(DOCS, 'HISTORY.txt')
 
-version = '1.4.1'
+version = '1.5.0'
 long_description = open(README).read() + '\n\n' + open(HISTORY).read()
 
 tests_require = [
@@ -70,7 +70,7 @@ setup(name='pyams_elastic',
           'elasticsearch',
           'elasticsearch_dsl',
           'persistent',
-          'pyams_utils',
+          'pyams_utils >= 1.15.0',
           'pyramid',
           'transaction',
           'zope.component',

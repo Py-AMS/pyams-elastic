@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.5.0
+-----
+ - allow usage of dynamic text formatters into scheduler Elasticsearch tasks
+
 1.4.1
 -----
  - use new scheduler task execution status on failure
