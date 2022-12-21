@@ -203,7 +203,7 @@ class ElasticClient(TransactionClient):
         doc_mapping = self.get_mappings()
         if (not doc_mapping) or recreate:
             doc_mapping = {}
-            for cls in base_class._decl_class_registry.values():  # pylint: disable=protected-access
+            for cls in base_class.registry._class_registry.values():  # pylint: disable=protected-access
                 if not IElasticMapping.providedBy(cls):
                     continue
                 cls_mapping = dict(cls.elastic_mapping())
