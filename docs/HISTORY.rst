@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.5.1
+-----
+ - use new SQLAlchemy structure to get access to mappings registry
+ - added support for Python 3.11
+
 1.5.0
 -----
  - allow usage of dynamic text formatters into scheduler Elasticsearch tasks
