@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.5.2
+-----
+ - restored deleted services in Gitlab CI configuration
+
 1.5.1
 -----
  - use new SQLAlchemy structure to get access to mappings registry
