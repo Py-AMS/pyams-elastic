@@ -1,5 +1,10 @@
 image: python:3.7
 
+services:
+    - name: docker.elastic.co/elasticsearch/elasticsearch:7.17.8
+      alias: elasticsearch
+      command: ["bin/elasticsearch", "-Expack.security.enabled=false", "-Ediscovery.type=single-node"]
+
 stages:
     - test
     - quality
