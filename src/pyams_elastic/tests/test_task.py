@@ -267,5 +267,5 @@ class TestElasticTask(TestCase):
 
         src_client.delete_index()
         src_client.close()
-        trg_client.delete_index()
+        # trg_client.delete_index()
         trg_client.close()
