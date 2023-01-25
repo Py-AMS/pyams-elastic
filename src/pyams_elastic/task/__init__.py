@@ -166,7 +166,7 @@ class ElasticReindexTask(Task):
                                               doc=target_value)
                     except ConnectionError:
                         report.write(' - Elasticsearch connection error!')
-                        return TASK_STATUS_ERROR, None
+                        return TASK_STATUS_FAIL, None
                     except ElasticsearchException:
                         report.write(f' - indexing error: {hit._id}\n')
                     else:

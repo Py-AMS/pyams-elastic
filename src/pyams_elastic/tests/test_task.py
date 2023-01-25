@@ -228,7 +228,7 @@ class TestElasticTask(TestCase):
         task_target_info.servers = ['unknown_hostname:9200']
         report = StringIO()
         status, results = task.run(report)
-        self.assertEqual(status, TASK_STATUS_ERROR)
+        self.assertEqual(status, TASK_STATUS_FAIL)
         self.assertEqual(results, None)
         report.close()
 
