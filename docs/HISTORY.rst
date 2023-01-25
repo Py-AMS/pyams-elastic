@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.6.0
+-----
+ - added PyAMS scheduler task to handler partial Elasticsearch re-indexation
+ - added support for PyAMS dynamic text formatters into Elasticsearch client index name
+
 1.5.2
 -----
  - restored deleted services in Gitlab CI configuration
