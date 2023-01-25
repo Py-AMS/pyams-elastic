@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2022-11-09 15:31+0100\n"
+"POT-Creation-Date: 2023-01-25 17:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,29 +99,30 @@ msgstr ""
 "Si une requête échoue à cause d'un délai d'attente dépassé, vous pouvez "
 "indiquer le nombre de nouvelles tentatives qui pourront être effectuées"
 
-#: src/pyams_elastic/task/interfaces.py:35
+#: src/pyams_elastic/task/interfaces.py:43
 msgid "Elasticsearch connection"
 msgstr "Connexion Elasticsearch"
 
-#: src/pyams_elastic/task/interfaces.py:39
+#: src/pyams_elastic/task/interfaces.py:47
 msgid "Query"
 msgstr "Requête"
 
-#: src/pyams_elastic/task/interfaces.py:40
+#: src/pyams_elastic/task/interfaces.py:48
+#: src/pyams_elastic/task/interfaces.py:104
 msgid ""
 "Complete Elasticsearch query, in JSON format; you can include dynamic "
 "fragments into your JSON code using PyAMS text renderers rules (see "
 "documentation)"
 msgstr ""
-"Indiquez ici le contenu de la requête Elasticsearch, au format JSON ; vous pouvez intégrer "
-"des éléments dynamiques dans le code JSON en appliquant les règles des outils de "
-"formatage de texte proposés par PyAMS (Cf documentation)"
+"Indiquez ici le contenu de la requête Elasticsearch, au format JSON ; vous "
+"pouvez intégrer des éléments dynamiques dans le code JSON en appliquant les "
+"règles des outils de formatage de texte proposés par PyAMS (Cf documentation)"
 
-#: src/pyams_elastic/task/interfaces.py:45
+#: src/pyams_elastic/task/interfaces.py:53
 msgid "Expected results count"
 msgstr "Nombre de résultats attendu"
 
-#: src/pyams_elastic/task/interfaces.py:46
+#: src/pyams_elastic/task/interfaces.py:54
 msgid ""
 "Number of expected results; you can enter a single number, or a range by "
 "entering two numbers separated by a dash; an error status will be returned "
@@ -134,7 +135,7 @@ msgstr ""
 "l'intervalle ; si la valeur est laissée vide, toutes les requêtes généreront "
 "une erreur"
 
-#: src/pyams_elastic/task/interfaces.py:67
+#: src/pyams_elastic/task/interfaces.py:75
 msgid ""
 "Expected results must be a single positive number, or two positive numbers "
 "separated by a dash"
@@ -142,27 +143,65 @@ msgstr ""
 "Le nombre de résultats attendu doit être soit un nombre entier positif, soit "
 "un intervalle composé de deux nombres entiers séparés par un tiret"
 
-#: src/pyams_elastic/task/interfaces.py:70
+#: src/pyams_elastic/task/interfaces.py:78
 msgid "Log output fields"
 msgstr "Attributs du rapport d'erreur"
 
-#: src/pyams_elastic/task/interfaces.py:71
+#: src/pyams_elastic/task/interfaces.py:79
 msgid "List of results fields to include in task log output report"
 msgstr ""
 "Liste des champs présents dans le rapport d'erreur ; n'oubliez pas "
 "d'intégrer ces champs dans la liste des champs renvoyés par la requête !"
 
-#: src/pyams_elastic/task/__init__.py:43
+#: src/pyams_elastic/task/interfaces.py:99
+msgid "Source connection"
+msgstr "Connexion source"
+
+#: src/pyams_elastic/task/interfaces.py:103
+msgid "Source query"
+msgstr "Requête source"
+
+#: src/pyams_elastic/task/interfaces.py:109
+msgid "Source fields"
+msgstr "Attributs source"
+
+#: src/pyams_elastic/task/interfaces.py:110
+msgid ""
+"List of fields extracted from source query results which will be parsed and "
+"inserted into target index"
+msgstr ""
+"Liste des attributs extraits de la requête source ; seuls ces attributs seront extraits de "
+"la source et insérés dans l'index cible (en conservant le même ID). Vous pouvez renommer ces "
+"attributs en les indiquant sous la forme 'target_name=source.name'. Si le nom de l'attribut dans "
+"la source correspond à un objet, ce sont tous les attributs de cet objet qui seront repris."
+
+#: src/pyams_elastic/task/interfaces.py:115
+msgid "Target connection"
+msgstr "Connexion cible"
+
+#: src/pyams_elastic/task/__init__.py:45
 msgid "Elasticsearch query"
 msgstr "Requête Elasticsearch"
 
-#: src/pyams_elastic/task/zmi/__init__.py:65
+#: src/pyams_elastic/task/__init__.py:108
+msgid "Elasticsearch re-indexer"
+msgstr "Ré-indexation Elasticsearch"
+
+#: src/pyams_elastic/task/zmi/__init__.py:69
 msgid "Elasticsearch task settings"
 msgstr "Requête Elasticsearch"
 
-#: src/pyams_elastic/task/zmi/__init__.py:91
+#: src/pyams_elastic/task/zmi/__init__.py:95
 msgid "Add Elasticsearch query..."
 msgstr "Requête Elasticsearch"
+
+#: src/pyams_elastic/task/zmi/__init__.py:147
+msgid "Elasticsearch reindex task settings"
+msgstr "Ré-indexation Elasticsearch"
+
+#: src/pyams_elastic/task/zmi/__init__.py:173
+msgid "Add Elasticsearch reindex..."
+msgstr "Ré-indexation Elasticsearch"
 
 #~ msgid "Complete Elasticsearch query, in JSON format"
 #~ msgstr "Texte de la requête Elasticsearch, au format JSON"

@@ -19,6 +19,7 @@ from unittest import TestCase
 
 from pyams_elastic.client import ElasticClient, ElasticClientInfo
 
+
 __docformat__ = 'restructuredtext'
 
 

@@ -17,6 +17,7 @@ This module provides unit tests for PyAMS scheduler task for Elasticsearch.
 
 __docformat__ = 'restructuredtext'
 
+import json
 from io import StringIO
 from unittest import TestCase
 
@@ -24,7 +25,8 @@ from zope.interface import Invalid
 from zope.schema._bootstrapinterfaces import WrongType
 
 from pyams_elastic.client import ElasticClient, ElasticClientInfo
-from pyams_elastic.task import ElasticTask
+from pyams_elastic.docdict import DotDict
+from pyams_elastic.task import ElasticReindexTask, ElasticTask
 from pyams_elastic.task.interfaces import IElasticTaskInfo
 from pyams_elastic.tests.data import Base, get_data
 from pyams_scheduler.interfaces.task import TASK_STATUS_ERROR, TASK_STATUS_FAIL, TASK_STATUS_OK
@@ -165,3 +167,105 @@ class TestElasticTask(TestCase):
 
         client.delete_index()
         client.close()
+
+    def test_parser_task(self):
+        src_client = ElasticClient(servers=['elasticsearch:9200'],
+                                   index='pyams_elastic_tests',
+                                   use_transaction=False)
+        src_client.ensure_index(recreate=True)
+        src_client.ensure_all_mappings(Base)
+        genres, movies = get_data()
+        src_client.index_objects(genres)
+        src_client.index_objects(movies)
+        src_client.refresh()
+
+        trg_client = ElasticClient(servers=['elasticsearch:9200'],
+                                   index='pyams_elastic_parser_tests',
+                                   use_transaction=False)
+
+        task_source_info = ElasticClientInfo()
+        task_source_info.servers = ['elasticsearch:9200']
+        task_source_info.index = 'pyams_elastic_tests'
+
+        task_target_info = ElasticClientInfo()
+        task_target_info.servers = ['elasticsearch:9200']
+        task_target_info.index = 'pyams_elastic_parser_tests'
+
+        task = ElasticReindexTask()
+        task.source_connection = task_source_info
+        task.source_query = '''{
+            "query": {
+                "bool": {
+                    "filter": {
+                        "term": {
+                            "year": 1977
+                        }
+                    }
+                }
+            },
+            "size": 10,
+            "_source": [
+                "title",
+                "document_type"
+            ]
+        }'''
+        task.source_fields = [
+            'year',
+            'new_title=title'
+        ]
+        task.target_connection = task_target_info
+
+        # check for source failure
+        task_source_info.servers = ['unknown_hostname:9200']
+        report = StringIO()
+        status, results = task.run(report)
+        self.assertEqual(status, TASK_STATUS_FAIL)
+        self.assertEqual(results, None)
+        report.close()
+
+        # check for target failure
+        task_source_info.servers = ['localhost:9200']
+        task_target_info.servers = ['unknown_hostname:9200']
+        report = StringIO()
+        status, results = task.run(report)
+        self.assertEqual(status, TASK_STATUS_ERROR)
+        self.assertEqual(results, None)
+        report.close()
+
+        # check for reindex OK
+        task_target_info.servers = ['localhost:9200']
+
+        report = StringIO()
+        status, results = task.run(report)
+        report.seek(0)
+        output = report.getvalue()
+        self.assertEqual(status, TASK_STATUS_OK)
+        self.assertIn("total re-indexed records: 1", output)
+        self.assertTrue(trg_client.es.indices.exists(index=trg_client.index))
+
+        trg_client.refresh()
+        query = {'query': json.loads(task.source_query).get('query')}
+        count = DotDict(trg_client.es.count(body=query,
+                                            index=trg_client.index))
+        self.assertEqual(count.count, 1)
+
+        # check for saved document ID
+        es_src_results = DotDict(src_client.es.search(body=task.source_query,
+                                                      index=src_client.index))
+        src_element = es_src_results.hits.hits[0]
+        es_trg_result = DotDict(trg_client.es.get(id=src_element._id,
+                                                  index=trg_client.index))
+        self.assertIsNotNone(es_trg_result)
+        self.assertEqual(es_trg_result._id, src_element._id)
+
+        # check for updated document fields
+        es_results = DotDict(trg_client.es.search(body=query,
+                                                  index=trg_client.index))
+        es_element = es_results.hits.hits[0]
+        self.assertEqual(es_element._source.new_title, 'Annie Hall')
+        self.assertFalse('director' in es_element._source)
+
+        src_client.delete_index()
+        src_client.close()
+        trg_client.delete_index()
+        trg_client.close()

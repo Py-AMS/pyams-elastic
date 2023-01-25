@@ -29,8 +29,16 @@ __docformat__ = 'restructuredtext'
 from pyams_elastic import _  # pylint: disable=ungrouped-imports
 
 
+#
+# Base Elasticsearch task
+#
+
 class IElasticTaskInfo(Interface):
-    """Elasticsearch scheduler task interface"""
+    """Elasticsearch scheduler task interface
+
+    This kind of task is used to launch an Elasticsearch query. Task execution status is
+    based on the number of query results, compared with a number or range of expected results.
+    """
 
     connection = Object(title=_("Elasticsearch connection"),
                         schema=IElasticClientInfo,
@@ -75,3 +83,39 @@ class IElasticTaskInfo(Interface):
 
 class IElasticTask(ITask, IElasticTaskInfo):
     """Elasticsearch task interface"""
+
+
+#
+# Elasticsearch reindex task
+#
+
+class IElasticReindexTaskInfo(Interface):
+    """Elasticsearch reindex scheduler task interface
+
+    This kind of task is used to launch an Elasticsearch query from which we can extract
+    a set of fields which will be parsed (as JSON) and reinserted into another index.
+    """
+
+    source_connection = Object(title=_("Source connection"),
+                               schema=IElasticClientInfo,
+                               required=True)
+
+    source_query = Text(title=_("Source query"),
+                        description=_("Complete Elasticsearch query, in JSON format; you can "
+                                      "include dynamic fragments into your JSON code using PyAMS "
+                                      "text renderers rules (see documentation)"),
+                        required=True)
+
+    source_fields = TextLineListField(title=_("Source fields"),
+                                      description=_("List of fields extracted from source query "
+                                                    "results which will be parsed and inserted "
+                                                    "into target index"),
+                                      required=True)
+
+    target_connection = Object(title=_("Target connection"),
+                               schema=IElasticClientInfo,
+                               required=True)
+
+
+class IElasticReindexTask(ITask, IElasticReindexTaskInfo):
+    """Elasticsearch parser task interface"""
