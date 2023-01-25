@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.6.2
+-----
+ - disabled some unit tests because of strange behaviour with Gitlab's Docker
+
 1.6.1
 -----
  - updated re-indexation task status on failure
