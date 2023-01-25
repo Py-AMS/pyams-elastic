@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.6.1
+-----
+ - updated re-indexation task status on failure
+
 1.6.0
 -----
  - added PyAMS scheduler task to handler partial Elasticsearch re-indexation
