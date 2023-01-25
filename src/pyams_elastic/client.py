@@ -32,6 +32,7 @@ from pyams_elastic.interfaces import IElasticClient, IElasticClientInfo, IElasti
     IElasticMappingExtension
 from pyams_elastic.query import ElasticQuery
 from pyams_utils.factory import factory_config
+from pyams_utils.text import render_text
 from pyams_utils.transaction import TransactionClient, transactional
 
 
@@ -131,10 +132,10 @@ class ElasticClient(TransactionClient):
         assert servers or using, "You must provide servers or connection info!"
         self.disable_indexing = disable_indexing
         if using is not None:
-            self.index = using.index
+            self.index = render_text(using.index)
             self.es = using.open()  # pylint: disable=invalid-name
         else:
-            self.index = index
+            self.index = render_text(index)
             self.es = Elasticsearch(servers,  # pylint: disable=invalid-name
                                     auth=auth,
                                     use_ssl=use_ssl,

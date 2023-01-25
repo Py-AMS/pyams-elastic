@@ -17,17 +17,21 @@ Pyramid integration tests.
 
 __docformat__ = 'restructuredtext'
 
+from datetime import date
 from unittest import TestCase
 from urllib.parse import urlencode
 
 from pyramid.config import Configurator
 from pyramid.httpexceptions import HTTPFound
+from pyramid.threadlocal import RequestContext
 from sqlalchemy import Column, types
 from sqlalchemy.ext.declarative import declarative_base
 from webtest import TestApp
 
+from pyams_elastic.client import ElasticClient, ElasticClientInfo
 from pyams_elastic.include import get_client
 from pyams_elastic.mixin import ESKeyword, ESMapping, ESText, ElasticMixin
+from pyams_utils.request import check_request
 
 
 Base = declarative_base()
@@ -171,3 +175,18 @@ class TestPyramid(TestCase):
         self.app.get('/add?' + params, status=302)
         resp = self.app.get('/')
         resp.mustcontain('Kiwi')
+
+    def test_client_with_dynamic_index_name(self):
+        info = ElasticClientInfo()
+        info.servers = ['elasticsearch:9200']
+        info.index = 'pyams_elastic_tests_${{now:%Y-%m-%d}}'
+        request = check_request(registry=self.app.app.registry)
+        with RequestContext(request):
+            client = ElasticClient(using=info,
+                                   use_transaction=False)
+            today = date.today().strftime('%Y-%m-%d')
+            self.assertTrue(client.index.endswith(today))
+            client = ElasticClient(servers=info.servers,
+                                   index=info.index,
+                                   use_transaction=False)
+            self.assertTrue(client.index.endswith(today))
