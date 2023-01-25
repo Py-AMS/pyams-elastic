@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.6.3
+-----
+ - updated unit tests (still partially disabled!)
+
 1.6.2
 -----
  - disabled some unit tests because of strange behaviour with Gitlab's Docker
