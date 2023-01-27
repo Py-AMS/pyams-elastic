@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.6.6
+-----
+ - updated translations
+
 1.6.5
 -----
  - use pagination and bulk API in Elasticsearch re-indexation task
