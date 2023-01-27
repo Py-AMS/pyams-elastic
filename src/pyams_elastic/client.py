@@ -167,7 +167,7 @@ class ElasticClient(TransactionClient):
             if exists:
                 self.es.indices.delete(index=self.index)
             self.es.indices.create(index=self.index,
-                                   body=dict(settings=settings or CREATE_INDEX_SETTINGS))
+                                   **dict(settings=settings or CREATE_INDEX_SETTINGS))
 
     def delete_index(self):
         """
@@ -276,7 +276,8 @@ class ElasticClient(TransactionClient):
 
         body = {'script': script} if script else {'doc': doc}
         body.update(kw)
-        kwargs = dict(index=self.index, id=id, body=body)
+        kwargs = dict(index=self.index, id=id)
+        kwargs.update(body)
         try:
             result = self.es.update(**kwargs)
             return result.get('result'), DotDict(result.get('get', {}).get('_source'))

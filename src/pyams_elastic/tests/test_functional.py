@@ -35,7 +35,7 @@ class ClientTestLayer:
         cls.client = ElasticClient(servers=['elasticsearch:9200'],
                                    index='pyams_elastic_tests',
                                    use_transaction=False)
-        if cls.client.es.indices.exists(cls.client.index):
+        if cls.client.es.indices.exists(index=cls.client.index):
             cls.client.delete_index()
 
     @classmethod
