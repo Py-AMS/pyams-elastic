@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.6.4
+-----
+ - restored all unit tests
+
 1.6.3
 -----
  - updated unit tests (still partially disabled!)
