@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2023-01-25 17:58+0100\n"
+"POT-Creation-Date: 2023-01-27 21:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -177,6 +177,14 @@ msgstr ""
 "à un objet, ce sont tous les attributs de cet objet qui seront repris."
 
 #: src/pyams_elastic/task/interfaces.py:115
+msgid "Page size"
+msgstr "Taille de page"
+
+#: src/pyams_elastic/task/interfaces.py:116
+msgid "Maximum number of hits returned in a single query"
+msgstr "Nombre maximum d'éléments retournés par une requête"
+
+#: src/pyams_elastic/task/interfaces.py:121
 msgid "Target connection"
 msgstr "Connexion cible"
 
