@@ -224,7 +224,7 @@ class TestElasticTask(TestCase):
         report.close()
 
         # check for target failure
-        task_source_info.servers = ['localhost:9200']
+        task_source_info.servers = ['elasticsearch:9200']
         task_target_info.servers = ['unknown_hostname:9200']
         report = StringIO()
         status, results = task.run(report)
@@ -233,39 +233,39 @@ class TestElasticTask(TestCase):
         report.close()
 
         # # check for reindex OK
-        # task_target_info.servers = ['localhost:9200']
-        #
-        # report = StringIO()
-        # status, results = task.run(report)
-        # report.seek(0)
-        # output = report.getvalue()
-        # self.assertEqual(status, TASK_STATUS_OK)
-        # self.assertIn("total re-indexed records: 1", output)
-        # self.assertTrue(trg_client.es.indices.exists(index=trg_client.index))
-        #
-        # trg_client.refresh()
-        # query = {'query': json.loads(task.source_query).get('query')}
-        # count = DotDict(trg_client.es.count(body=query,
-        #                                     index=trg_client.index))
-        # self.assertEqual(count.count, 1)
-        #
-        # # check for saved document ID
-        # es_src_results = DotDict(src_client.es.search(body=task.source_query,
-        #                                               index=src_client.index))
-        # src_element = es_src_results.hits.hits[0]
-        # es_trg_result = DotDict(trg_client.es.get(id=src_element._id,
-        #                                           index=trg_client.index))
-        # self.assertIsNotNone(es_trg_result)
-        # self.assertEqual(es_trg_result._id, src_element._id)
-        #
-        # # check for updated document fields
-        # es_results = DotDict(trg_client.es.search(body=query,
-        #                                           index=trg_client.index))
-        # es_element = es_results.hits.hits[0]
-        # self.assertEqual(es_element._source.new_title, 'Annie Hall')
-        # self.assertFalse('director' in es_element._source)
+        task_target_info.servers = ['elasticsearch:9200']
+
+        report = StringIO()
+        status, results = task.run(report)
+        report.seek(0)
+        output = report.getvalue()
+        self.assertEqual(status, TASK_STATUS_OK)
+        self.assertIn("total re-indexed records: 1", output)
+        self.assertTrue(trg_client.es.indices.exists(index=trg_client.index))
+
+        trg_client.refresh()
+        query = {'query': json.loads(task.source_query).get('query')}
+        count = DotDict(trg_client.es.count(body=query,
+                                            index=trg_client.index))
+        self.assertEqual(count.count, 1)
+
+        # check for saved document ID
+        es_src_results = DotDict(src_client.es.search(body=task.source_query,
+                                                      index=src_client.index))
+        src_element = es_src_results.hits.hits[0]
+        es_trg_result = DotDict(trg_client.es.get(id=src_element._id,
+                                                  index=trg_client.index))
+        self.assertIsNotNone(es_trg_result)
+        self.assertEqual(es_trg_result._id, src_element._id)
+
+        # check for updated document fields
+        es_results = DotDict(trg_client.es.search(body=query,
+                                                  index=trg_client.index))
+        es_element = es_results.hits.hits[0]
+        self.assertEqual(es_element._source.new_title, 'Annie Hall')
+        self.assertFalse('director' in es_element._source)
 
         src_client.delete_index()
         src_client.close()
-        # trg_client.delete_index()
+        trg_client.delete_index()
         trg_client.close()
