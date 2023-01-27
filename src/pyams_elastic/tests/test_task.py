@@ -196,21 +196,26 @@ class TestElasticTask(TestCase):
         task.source_query = '''{
             "query": {
                 "bool": {
-                    "filter": {
-                        "term": {
-                            "year": 1977
+                    "must": {
+                        "range": {
+                            "rating": {
+                                "gte": 7
+                            }
                         }
                     }
                 }
             },
-            "size": 10,
+            "size": 100,
+            "sort": ["_score", "year"],
             "_source": [
                 "title",
                 "document_type"
             ]
         }'''
+        task.page_size = 3
         task.source_fields = [
             'year',
+            'rating',
             'new_title=title'
         ]
         task.target_connection = task_target_info
@@ -240,30 +245,29 @@ class TestElasticTask(TestCase):
         report.seek(0)
         output = report.getvalue()
         self.assertEqual(status, TASK_STATUS_OK)
-        self.assertIn("total re-indexed records: 1", output)
+        self.assertIn("total source records: 8", output)
+        self.assertIn("total re-indexed records: 8", output)
         self.assertTrue(trg_client.es.indices.exists(index=trg_client.index))
 
         trg_client.refresh()
         query = {'query': json.loads(task.source_query).get('query')}
-        count = DotDict(trg_client.es.count(body=query,
-                                            index=trg_client.index))
-        self.assertEqual(count.count, 1)
+        count = DotDict(trg_client.es.count(index=trg_client.index, body=query))
+        self.assertEqual(count.count, 8)
 
         # check for saved document ID
-        es_src_results = DotDict(src_client.es.search(body=task.source_query,
-                                                      index=src_client.index))
+        query = json.loads(task.source_query)
+        es_src_results = DotDict(src_client.es.search(index=src_client.index, **query))
         src_element = es_src_results.hits.hits[0]
-        es_trg_result = DotDict(trg_client.es.get(id=src_element._id,
-                                                  index=trg_client.index))
-        self.assertIsNotNone(es_trg_result)
-        self.assertEqual(es_trg_result._id, src_element._id)
+        trg_element = DotDict(trg_client.es.get(id=src_element._id,
+                                                index=trg_client.index))
+        self.assertIsNotNone(trg_element)
+        self.assertEqual(trg_element._id, src_element._id)
 
         # check for updated document fields
-        es_results = DotDict(trg_client.es.search(body=query,
-                                                  index=trg_client.index))
-        es_element = es_results.hits.hits[0]
-        self.assertEqual(es_element._source.new_title, 'Annie Hall')
-        self.assertFalse('director' in es_element._source)
+        trg_element = DotDict(trg_client.es.get(id=src_element._id,
+                                                index=trg_client.index))
+        self.assertEqual(trg_element._source.new_title, src_element._source.title)
+        self.assertFalse('director' in trg_element._source)
 
         src_client.delete_index()
         src_client.close()

@@ -17,7 +17,7 @@ which can be used to handle Elasticsearch regular queries.
 """
 
 from zope.interface import Interface, Invalid, invariant
-from zope.schema import Object, Text, TextLine
+from zope.schema import Int, Object, Text, TextLine
 
 from pyams_elastic.interfaces import IElasticClientInfo
 from pyams_scheduler.interfaces import ITask
@@ -111,6 +111,12 @@ class IElasticReindexTaskInfo(Interface):
                                                     "results which will be parsed and inserted "
                                                     "into target index"),
                                       required=True)
+
+    page_size = Int(title=_("Page size"),
+                    description=_("Maximum number of hits returned in a single query"),
+                    default=1000,
+                    min=1,
+                    max=10000)
 
     target_connection = Object(title=_("Target connection"),
                                schema=IElasticClientInfo,

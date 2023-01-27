@@ -20,7 +20,7 @@ import json
 import sys
 import traceback
 
-from elasticsearch import ConnectionError, ElasticsearchException
+from elasticsearch import ConnectionError, ElasticsearchException, helpers
 from zope.schema.fieldproperty import FieldProperty
 
 from pyams_elastic.client import ElasticClient
@@ -58,8 +58,8 @@ class ElasticTask(Task):
             try:
                 report.write('Elasticsearch query output\n'
                              '==========================\n')
-                results = client.es.search(body=render_text(self.query),
-                                           index=self.connection.index)
+                query = json.loads(render_text(self.query))
+                results = client.es.search(index=self.connection.index, **query)
                 hits = DotDict(results['hits'])
                 expected = self.expected_results
                 total = hits.total
@@ -111,6 +111,7 @@ class ElasticReindexTask(Task):
     source_connection = FieldProperty(IElasticReindexTask['source_connection'])
     source_query = FieldProperty(IElasticReindexTask['source_query'])
     source_fields = FieldProperty(IElasticReindexTask['source_fields'])
+    page_size = FieldProperty(IElasticReindexTask['page_size'])
     target_connection = FieldProperty(IElasticReindexTask['target_connection'])
 
     def get_source_fields(self):
@@ -121,6 +122,30 @@ class ElasticReindexTask(Task):
                 yield source
             else:
                 yield field
+
+    def get_hits(self, results):
+        """Internal hits iterator getter"""
+        for hit in results.hits.hits:
+            target_value = {}
+            for field in self.source_fields:
+                if '=' in field:
+                    target_field, source_field = field.split('=')
+                else:
+                    target_field = source_field = field
+                source_value = hit._source
+                for attr in source_field.split('.'):
+                    try:
+                        source_value = source_value[attr]
+                    except KeyError:
+                        break
+                try:
+                    target_value[target_field] = json.loads(source_value)
+                except (TypeError, json.JSONDecodeError):
+                    target_value[target_field] = source_value
+            yield {
+                '_id': hit._id,
+                '_source': target_value
+            }
 
     def run(self, report, **kwargs):  # pylint: disable=unused-argument,too-many-locals,too-many-branches
         """Run Elasticsearch re-indexer query task"""
@@ -136,43 +161,32 @@ class ElasticReindexTask(Task):
                 report.write(f' - target index: {target.index}\n\n')
                 source_query = json.loads(render_text(self.source_query))
                 source_query['_source'] = list(self.get_source_fields())
-                results = source.es.search(body=source_query,
-                                           index=self.source_connection.index)
-                hits = DotDict(results['hits'])
-                total = hits.total
-                if isinstance(total, DotDict):
-                    total = total.value
-                report.write(f" - total query results: {total}\n")
+                source_query['size'] = self.page_size
+                if 'sort' not in source_query:
+                    source_query['sort'] = ['_score', '@timestamp']
+                source_count = 0
                 index_count = 0
-                for hit in hits.hits:
-                    target_value = {}
-                    for field in self.source_fields:
-                        if '=' in field:
-                            target_field, source_field = field.split('=')
-                        else:
-                            target_field = source_field = field
-                        source_value = hit._source
-                        for attr in source_field.split('.'):
-                            try:
-                                source_value = source_value[attr]
-                            except KeyError:
-                                break
-                        try:
-                            target_value[target_field] = json.loads(source_value)
-                        except (TypeError, json.JSONDecodeError):
-                            target_value[target_field] = source_value
-                    try:
-                        target.index_document(id=hit._id,
-                                              doc=target_value)
-                    except ConnectionError:
-                        report.write(' - Elasticsearch connection error!')
-                        return TASK_STATUS_FAIL, None
-                    except ElasticsearchException:
-                        report.write(f' - indexing error: {hit._id}\n')
-                    else:
-                        index_count += 1
+                has_more_results = True
+                last_sort = None
+                while has_more_results:
+                    if last_sort:
+                        source_query['search_after'] = last_sort
+                    results = DotDict(source.es.search(index=self.source_connection.index,
+                                                       **source_query))
+                    source_count += len(results.hits.hits)
+                    actions, errors = helpers.bulk(target.es, self.get_hits(results),
+                                                   index=target.index,
+                                                   stats_only=False,
+                                                   raise_on_error=False)
+                    has_more_results = len(results.hits.hits) >= self.page_size
+                    if has_more_results:
+                        last_sort = results.hits.hits[-1].sort
+                    index_count += actions
+                    for error in errors:
+                        report.write(f' - indexing error: {error}\n')
+                report.write(f' - total source records: {source_count}\n')
                 report.write(f' - total re-indexed records: {index_count}\n\n')
-                return TASK_STATUS_OK, hits
+                return TASK_STATUS_OK, results
             finally:
                 source.close()
                 target.close()
