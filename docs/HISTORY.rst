@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.6.5
+-----
+ - use pagination and bulk API in Elasticsearch re-indexation task
+ - replace 'body' parameter with named arguments
+
 1.6.4
 -----
  - restored all unit tests
