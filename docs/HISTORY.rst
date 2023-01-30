@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.6.7
+-----
+ - updated output of Elasticsearch re-indexation task
+ - updated tasks docstrings
+
 1.6.6
 -----
  - updated translations
