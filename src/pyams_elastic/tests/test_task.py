@@ -245,6 +245,7 @@ class TestElasticTask(TestCase):
         report.seek(0)
         output = report.getvalue()
         self.assertEqual(status, TASK_STATUS_OK)
+        self.assertEqual(results, (8, 8))
         self.assertIn("total source records: 8", output)
         self.assertIn("total re-indexed records: 8", output)
         self.assertTrue(trg_client.es.indices.exists(index=trg_client.index))

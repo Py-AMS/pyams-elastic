@@ -40,7 +40,12 @@ from pyams_elastic import _  # pylint: disable=ungrouped-imports
 
 @factory_config(IElasticTask)
 class ElasticTask(Task):
-    """Elasticsearch task"""
+    """Elasticsearch task
+
+    This task is used to execute an Elasticsearch search query; you can specify the
+    number of records which are expected (a simple number or a range), and an error status
+    is returned if a query is returning more or less items.
+    """
 
     label = _("Elasticsearch query")
     icon_class = 'fab fa-searchengin'
@@ -103,7 +108,17 @@ class ElasticTask(Task):
 
 @factory_config(IElasticReindexTask)
 class ElasticReindexTask(Task):
-    """Elasticsearch reindexer task"""
+    """Elasticsearch re-indexer task
+
+    This task can be used to extract results of an Elasticsearch index to create documents
+    into another index; original ID and timestamp, if any, are left unmodified. You can also
+    specify the set of attributes which will be transferred into the new index, and you can rename
+    these attributes.
+
+    If an attribute is a string containing a serialized JSON object, it will be deserialized
+    and contained attributes will be used as new properties of documents created in the new
+    index.
+    """
 
     label = _("Elasticsearch re-indexer")
     icon_class = 'fas fa-code-merge'
@@ -186,7 +201,7 @@ class ElasticReindexTask(Task):
                         report.write(f' - indexing error: {error}\n')
                 report.write(f' - total source records: {source_count}\n')
                 report.write(f' - total re-indexed records: {index_count}\n\n')
-                return TASK_STATUS_OK, results
+                return TASK_STATUS_OK, (source_count, index_count)
             finally:
                 source.close()
                 target.close()
