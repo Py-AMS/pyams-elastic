@@ -25,7 +25,7 @@ from zope.interface import Invalid
 from zope.schema._bootstrapinterfaces import WrongType
 
 from pyams_elastic.client import ElasticClient, ElasticClientInfo
-from pyams_elastic.docdict import DotDict
+from pyams_utils.dict import DotDict
 from pyams_elastic.task import ElasticReindexTask, ElasticTask
 from pyams_elastic.task.interfaces import IElasticTaskInfo
 from pyams_elastic.tests.data import Base, get_data

@@ -24,7 +24,7 @@ from elasticsearch import ConnectionError, ElasticsearchException, helpers
 from zope.schema.fieldproperty import FieldProperty
 
 from pyams_elastic.client import ElasticClient
-from pyams_elastic.docdict import DotDict
+from pyams_utils.dict import DotDict
 from pyams_elastic.task.interfaces import IElasticReindexTask, IElasticReindexTaskInfo, \
     IElasticTask
 from pyams_scheduler.interfaces.task import TASK_STATUS_ERROR, TASK_STATUS_FAIL, TASK_STATUS_OK

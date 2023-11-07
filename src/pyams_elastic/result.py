@@ -17,7 +17,7 @@ This module defines Elasticsearch results management classes.
 
 __docformat__ = 'restructuredtext'
 
-from pyams_elastic.docdict import DotDict
+from pyams_utils.dict import DotDict
 
 
 class ElasticResultRecord:

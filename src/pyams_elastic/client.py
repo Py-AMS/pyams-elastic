@@ -27,7 +27,7 @@ from zope.component import getAdapters
 from zope.interface import implementer
 from zope.schema.fieldproperty import FieldProperty
 
-from pyams_elastic.docdict import DotDict
+from pyams_utils.dict import DotDict
 from pyams_elastic.interfaces import IElasticClient, IElasticClientInfo, IElasticMapping, \
     IElasticMappingExtension
 from pyams_elastic.query import ElasticQuery
