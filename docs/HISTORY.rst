@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.0.0
+-----
+ - upgraded to Pyramid 2.0
+ - upgraded to Elasticsearch 8.x
+
 1.6.7
 -----
  - updated output of Elasticsearch re-indexation task
