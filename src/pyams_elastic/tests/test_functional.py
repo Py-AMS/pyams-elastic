@@ -32,7 +32,7 @@ class ClientTestLayer:
 
     @classmethod
     def setUp(cls):
-        cls.client = ElasticClient(servers=['elasticsearch:9200'],
+        cls.client = ElasticClient(servers=['http://elasticsearch:9200'],
                                    index='pyams_elastic_tests',
                                    use_transaction=False)
         if cls.client.es.indices.exists(index=cls.client.index):
@@ -286,7 +286,7 @@ class QueryTestLayer:
 
     @classmethod
     def setUp(cls):
-        cls.client = ElasticClient(servers=['elasticsearch:9200'],
+        cls.client = ElasticClient(servers=['http://elasticsearch:9200'],
                                    index='pyams_elastic_tests',
                                    use_transaction=False)
         cls.client.ensure_index(recreate=True)

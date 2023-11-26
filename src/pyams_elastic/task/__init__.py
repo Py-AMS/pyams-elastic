@@ -20,7 +20,8 @@ import json
 import sys
 import traceback
 
-from elasticsearch import ConnectionError, ElasticsearchException, helpers
+from elasticsearch import helpers
+from elasticsearch.exceptions import TransportError
 from zope.schema.fieldproperty import FieldProperty
 
 from pyams_elastic.client import ElasticClient
@@ -97,7 +98,7 @@ class ElasticTask(Task):
                 return TASK_STATUS_ERROR, results
             finally:
                 client.close()
-        except ElasticsearchException:
+        except TransportError:
             etype, value, tb = sys.exc_info()  # pylint: disable=invalid-name
             report.write('\n\n'
                          'An Elasticsearch error occurred\n'
@@ -205,7 +206,7 @@ class ElasticReindexTask(Task):
             finally:
                 source.close()
                 target.close()
-        except ElasticsearchException:
+        except TransportError:
             etype, value, tb = sys.exc_info()  # pylint: disable=invalid-name
             report.write('\n\n'
                          'An Elasticsearch error occurred\n'

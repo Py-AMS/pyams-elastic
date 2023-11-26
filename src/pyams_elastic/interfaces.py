@@ -15,8 +15,8 @@
 This module defines mail package interfaces.
 """
 
-from zope.interface import Interface
-from zope.schema import Bool, Float, Int, TextLine
+from zope.interface import Attribute, Interface, Invalid, invariant
+from zope.schema import Bool, Float, Int, Password, TextLine, Tuple
 
 from pyams_utils.schema import TextLineListField
 
@@ -26,16 +26,33 @@ from pyams_elastic import _
 class IElasticClientInfo(Interface):
     """Elasticsearch client information interface"""
 
-    servers = TextLineListField(title=_("Servers"),
+    servers = TextLineListField(title=_("Hosts"),
                                 description=_("Newline separated list of Elasticsearch servers "
-                                              "URLs"),
-                                required=True,
-                                default=['elasticsearch:9200'])
+                                              "URLs, including protocol"),
+                                required=False)
 
-    use_ssl = Bool(title=_("Use SSL?"),
-                   description=_("If 'yes', use SSL for HTTP connection"),
-                   required=True,
-                   default=False)
+    cloud_id = TextLine(title=_("Cloud ID"),
+                        description=_("Elasticsearch cloud identifier"),
+                        required=False)
+
+    @invariant
+    def check_hosts(self):
+        """Check servers or cloud ID"""
+        if not (self.servers or self.cloud_id):
+            raise Invalid(_("Either hosts or cloud ID must be specified!"))
+
+    api_key = TextLine(title=_("API key"),
+                       description=_("API key and secret, separated by ':'"),
+                       required=False)
+
+    basic_auth = TextLine(title=_("Basic authentication"),
+                          description=_("Username and password used for basic authentication, "
+                                        "separated by ':'"),
+                          required=False)
+
+    bearer_auth = TextLine(title=_("Bearer authentication"),
+                           description=_("Token used for Bearer authentication"),
+                           required=False)
 
     verify_certs = Bool(title=_("Verify certificates?"),
                         description=_("If 'no', SSL certificates will not be verified"),

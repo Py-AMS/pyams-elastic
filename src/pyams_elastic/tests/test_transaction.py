@@ -21,7 +21,7 @@ from unittest import TestCase
 
 import transaction
 from sqlalchemy import Column, types
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 from pyams_elastic.client import ElasticClient
 from pyams_elastic.mixin import ESKeyword, ESMapping, ESText, ElasticMixin
@@ -49,7 +49,7 @@ class Todo(Base, ElasticMixin):
 class TestClient(TestCase):
 
     def setUp(self):
-        self.client = ElasticClient(servers=['elasticsearch:9200'],
+        self.client = ElasticClient(servers=['http://elasticsearch:9200'],
                                     index='pyams_elastic_tests_txn',
                                     use_transaction=True)
         self.client.ensure_index(recreate=True)

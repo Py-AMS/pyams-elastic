@@ -17,7 +17,7 @@ Pyramid integration tests.
 
 __docformat__ = 'restructuredtext'
 
-from datetime import date
+from datetime import datetime
 from unittest import TestCase
 from urllib.parse import urlencode
 
@@ -25,14 +25,13 @@ from pyramid.config import Configurator
 from pyramid.httpexceptions import HTTPFound
 from pyramid.threadlocal import RequestContext
 from sqlalchemy import Column, types
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from webtest import TestApp
 
 from pyams_elastic.client import ElasticClient, ElasticClientInfo
 from pyams_elastic.include import get_client
 from pyams_elastic.mixin import ESKeyword, ESMapping, ESText, ElasticMixin
 from pyams_utils.request import check_request
-
 
 Base = declarative_base()
 
@@ -76,7 +75,7 @@ def add_view(request):
 def make_app():
     settings = {
         'pyams_elastic.index': 'pyams_elastic_tests_app',
-        'pyams_elastic.servers': ['elasticsearch:9200'],
+        'pyams_elastic.servers': ['http://elasticsearch:9200'],
     }
     config = Configurator(settings=settings)
     config.include('pyramid_tm')
@@ -178,13 +177,13 @@ class TestPyramid(TestCase):
 
     def test_client_with_dynamic_index_name(self):
         info = ElasticClientInfo()
-        info.servers = ['elasticsearch:9200']
+        info.servers = ['http://elasticsearch:9200']
         info.index = 'pyams_elastic_tests_${{now:%Y-%m-%d}}'
         request = check_request(registry=self.app.app.registry)
         with RequestContext(request):
             client = ElasticClient(using=info,
                                    use_transaction=False)
-            today = date.today().strftime('%Y-%m-%d')
+            today = datetime.utcnow().date().strftime('%Y-%m-%d')
             self.assertTrue(client.index.endswith(today))
             client = ElasticClient(servers=info.servers,
                                    index=info.index,

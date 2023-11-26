@@ -43,9 +43,17 @@ def client_from_config(settings, prefix='pyams_elastic.', **kwargs):
         """Get setting from arguments or configuration file"""
         return kwargs.get(name, settings.get(f'{prefix}{name}', default))
 
+    api_key = get_setting('api_key')
+    api_key = api_key.split(':', 1) if api_key else None
+    basic_auth = get_setting('basic_auth')
+    basic_auth = basic_auth.split(':', 1) if basic_auth else None
+
     return ElasticClient(
-        servers=aslist(get_setting('servers', ['elasticsearch:9200'])),
-        use_ssl=asbool(get_setting('use_ssl', False)),
+        servers=aslist(get_setting('servers')),
+        cloud_id=get_setting('cloud_id'),
+        api_key=api_key,
+        basic_auth=basic_auth,
+        bearer_auth=get_setting('bearer_auth'),
         verify_certs=asbool(get_setting('verify_certs', True)),
         ca_certs=get_setting('ca_certs'),
         client_cert=get_setting('client_cert'),

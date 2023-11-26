@@ -87,7 +87,10 @@ class ElasticClientInfo(Persistent):
     """Elasticsearch client connection info"""
 
     servers = FieldProperty(IElasticClientInfo['servers'])
-    use_ssl = FieldProperty(IElasticClientInfo['use_ssl'])
+    cloud_id = FieldProperty(IElasticClientInfo['cloud_id'])
+    api_key = FieldProperty(IElasticClientInfo['api_key'])
+    basic_auth = FieldProperty(IElasticClientInfo['basic_auth'])
+    bearer_auth = FieldProperty(IElasticClientInfo['bearer_auth'])
     verify_certs = FieldProperty(IElasticClientInfo['verify_certs'])
     ca_certs = FieldProperty(IElasticClientInfo['ca_certs'])
     client_cert = FieldProperty(IElasticClientInfo['client_cert'])
@@ -98,26 +101,36 @@ class ElasticClientInfo(Persistent):
 
     def open(self):
         """Open Elasticsearch client"""
+        api_key = self.api_key
+        api_key = api_key.split(':', 1) if api_key else None
+        basic_auth = self.basic_auth
+        basic_auth = basic_auth.split(':', 1) if basic_auth else None
         return Elasticsearch(self.servers,  # pylint: disable=invalid-name
-                             use_ssl=self.use_ssl,
+                             cloud_id=self.cloud_id,
+                             api_key=api_key,
+                             basic_auth=basic_auth,
+                             bearer_auth=self.bearer_auth,
                              verify_certs=self.verify_certs,
                              ca_certs=self.ca_certs,
                              client_cert=self.client_cert,
                              client_key=self.client_key,
-                             timeout=self.timeout,
+                             request_timeout=self.timeout,
                              retry_on_timeout=self.timeout_retries > 0,
                              max_retries=self.timeout_retries)
 
 
 @implementer(IElasticClient)
 class ElasticClient(TransactionClient):
-    """
-    A handle for interacting with the Elasticsearch backend.
-    """
+    """A handle for interacting with the Elasticsearch backend"""
 
-    def __init__(self, servers=None, index=None, using=None,
-                 auth=None,
-                 use_ssl=False,
+    def __init__(self,
+                 servers=None,
+                 index=None,
+                 using=None,
+                 cloud_id=None,
+                 api_key=None,
+                 basic_auth=None,
+                 bearer_auth=None,
                  verify_certs=True,
                  ca_certs=None,
                  client_cert=None,
@@ -137,13 +150,15 @@ class ElasticClient(TransactionClient):
         else:
             self.index = render_text(index)
             self.es = Elasticsearch(servers,  # pylint: disable=invalid-name
-                                    auth=auth,
-                                    use_ssl=use_ssl,
+                                    cloud_id=cloud_id,
+                                    api_key=api_key,
+                                    basic_auth=basic_auth,
+                                    bearer_auth=bearer_auth,
                                     verify_certs=verify_certs,
                                     ca_certs=ca_certs,
                                     client_cert=client_cert,
                                     client_key=client_key,
-                                    timeout=timeout,
+                                    request_timeout=timeout,
                                     retry_on_timeout=timeout_retries > 0,
                                     max_retries=timeout_retries)
 

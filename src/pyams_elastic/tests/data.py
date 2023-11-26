@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 from hashlib import sha1
 
 from sqlalchemy import Column, ForeignKey, orm, types
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from zope.interface import provider
 
 from pyams_elastic.interfaces import IElasticMapping

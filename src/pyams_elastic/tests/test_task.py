@@ -71,7 +71,7 @@ class TestElasticTask(TestCase):
             IElasticTaskInfo.validateInvariants(task)
 
     def test_task(self):
-        client = ElasticClient(servers=['elasticsearch:9200'],
+        client = ElasticClient(servers=['http://elasticsearch:9200'],
                                index='pyams_elastic_tests',
                                use_transaction=False)
         client.ensure_index(recreate=True)
@@ -82,7 +82,7 @@ class TestElasticTask(TestCase):
         client.refresh()
 
         task_info = ElasticClientInfo()
-        task_info.servers = ['elasticsearch:9200']
+        task_info.servers = ['http://elasticsearch:9200']
         task_info.index = 'pyams_elastic_tests'
         task = ElasticTask()
         task.connection = task_info
@@ -106,7 +106,7 @@ class TestElasticTask(TestCase):
         task.log_fields = ['title', 'missing.field']
 
         # check for failure
-        task_info.servers = ['unknown_hostname:9200']
+        task_info.servers = ['http://unknown_hostname:9200']
         report = StringIO()
         status, results = task.run(report)
         self.assertEqual(status, TASK_STATUS_FAIL)
@@ -114,7 +114,7 @@ class TestElasticTask(TestCase):
         report.close()
 
         # check for error
-        task_info.servers = ['elasticsearch:9200']
+        task_info.servers = ['http://elasticsearch:9200']
 
         report = StringIO()
         status, results = task.run(report)
@@ -169,7 +169,7 @@ class TestElasticTask(TestCase):
         client.close()
 
     def test_reindex_task(self):
-        src_client = ElasticClient(servers=['elasticsearch:9200'],
+        src_client = ElasticClient(servers=['http://elasticsearch:9200'],
                                    index='pyams_elastic_tests',
                                    use_transaction=False)
         src_client.ensure_index(recreate=True)
@@ -179,16 +179,16 @@ class TestElasticTask(TestCase):
         src_client.index_objects(movies)
         src_client.refresh()
 
-        trg_client = ElasticClient(servers=['elasticsearch:9200'],
+        trg_client = ElasticClient(servers=['http://elasticsearch:9200'],
                                    index='pyams_elastic_parser_tests',
                                    use_transaction=False)
 
         task_source_info = ElasticClientInfo()
-        task_source_info.servers = ['elasticsearch:9200']
+        task_source_info.servers = ['http://elasticsearch:9200']
         task_source_info.index = 'pyams_elastic_tests'
 
         task_target_info = ElasticClientInfo()
-        task_target_info.servers = ['elasticsearch:9200']
+        task_target_info.servers = ['http://elasticsearch:9200']
         task_target_info.index = 'pyams_elastic_parser_tests'
 
         task = ElasticReindexTask()
@@ -221,7 +221,7 @@ class TestElasticTask(TestCase):
         task.target_connection = task_target_info
 
         # check for source failure
-        task_source_info.servers = ['unknown_hostname:9200']
+        task_source_info.servers = ['http://unknown_hostname:9200']
         report = StringIO()
         status, results = task.run(report)
         self.assertEqual(status, TASK_STATUS_FAIL)
@@ -229,8 +229,8 @@ class TestElasticTask(TestCase):
         report.close()
 
         # check for target failure
-        task_source_info.servers = ['elasticsearch:9200']
-        task_target_info.servers = ['unknown_hostname:9200']
+        task_source_info.servers = ['http://elasticsearch:9200']
+        task_target_info.servers = ['http://unknown_hostname:9200']
         report = StringIO()
         status, results = task.run(report)
         self.assertEqual(status, TASK_STATUS_FAIL)
@@ -238,7 +238,7 @@ class TestElasticTask(TestCase):
         report.close()
 
         # # check for reindex OK
-        task_target_info.servers = ['elasticsearch:9200']
+        task_target_info.servers = ['http://elasticsearch:9200']
 
         report = StringIO()
         status, results = task.run(report)

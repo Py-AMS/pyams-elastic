@@ -31,7 +31,7 @@ class TestClient(TestCase):
         self.assertIn("You must provide servers or connection info!", str(context.exception))
 
     def test_client_with_servers(self):
-        client = ElasticClient(servers=['elasticsearch:9200'],
+        client = ElasticClient(servers=['http://elasticsearch:9200'],
                                index='pyams_elastic_tests',
                                use_transaction=False)
         with client as es:
@@ -42,7 +42,7 @@ class TestClient(TestCase):
 
     def test_client_with_info(self):
         info = ElasticClientInfo()
-        info.servers = ['elasticsearch:9200']
+        info.servers = ['http://elasticsearch:9200']
         info.index = 'pyams_elastic_tests'
         client = ElasticClient(using=info,
                                use_transaction=False)
