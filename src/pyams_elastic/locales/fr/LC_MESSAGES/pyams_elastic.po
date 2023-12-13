@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2023-01-27 21:33+0100\n"
+"POT-Creation-Date: 2023-12-09 01:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,53 +16,82 @@ msgstr ""
 "Generated-By: Lingua 4.14\n"
 
 #: src/pyams_elastic/interfaces.py:29
-msgid "Servers"
-msgstr "Serveurs"
+msgid "Hosts"
+msgstr "Hôtes"
 
 #: src/pyams_elastic/interfaces.py:30
-msgid "Newline separated list of Elasticsearch servers URLs"
+msgid ""
+"Newline separated list of Elasticsearch servers URLs, including protocol"
 msgstr ""
-"Liste des URLs des serveurs Elasticsearch ; vous pouvez indiquer un serveur "
+"Liste des adresses des serveurs Elasticsearch ; vous pouvez indiquer un serveur "
 "par ligne, sous forme simplifiée (hostname:port) ou complète (https://"
 "username:password@hostname:port)"
 
+#: src/pyams_elastic/interfaces.py:34
+msgid "Cloud ID"
+msgstr "ID cloud"
+
 #: src/pyams_elastic/interfaces.py:35
-msgid "Use SSL?"
-msgstr "Utiliser SSL"
+msgid "Elasticsearch cloud identifier"
+msgstr "Identifiant cloud Elasticsearch"
 
-#: src/pyams_elastic/interfaces.py:36
-msgid "If 'yes', use SSL for HTTP connection"
-msgstr "Si 'oui', utiliser SSL pour des connexions HTTPS"
+#: src/pyams_elastic/interfaces.py:42
+msgid "Either hosts or cloud ID must be specified!"
+msgstr "Vous devez spécifier une liste d'hôtes ou un ID cloud !"
 
-#: src/pyams_elastic/interfaces.py:40
+#: src/pyams_elastic/interfaces.py:44
+msgid "API key"
+msgstr "Clé d'API"
+
+#: src/pyams_elastic/interfaces.py:45
+msgid "API key and secret, separated by ':'"
+msgstr "Clé d'API et code secret, séparés par ':'"
+
+#: src/pyams_elastic/interfaces.py:48
+msgid "Basic authentication"
+msgstr "Authentification basique"
+
+#: src/pyams_elastic/interfaces.py:49
+msgid "Username and password used for basic authentication, separated by ':'"
+msgstr "Code utilisateur et mot de passe utilisés pour l'authentification basique, séparés par ':'"
+
+#: src/pyams_elastic/interfaces.py:53
+msgid "Bearer authentication"
+msgstr "Authentification Bearer"
+
+#: src/pyams_elastic/interfaces.py:54
+msgid "Token used for Bearer authentication"
+msgstr "Jeton d'authentification Bearer"
+
+#: src/pyams_elastic/interfaces.py:57
 msgid "Verify certificates?"
 msgstr "Vérifier les certificats"
 
-#: src/pyams_elastic/interfaces.py:41
+#: src/pyams_elastic/interfaces.py:58
 msgid "If 'no', SSL certificates will not be verified"
 msgstr "Si 'non', les certificats SSL ne seront pas vérifiés"
 
-#: src/pyams_elastic/interfaces.py:45
+#: src/pyams_elastic/interfaces.py:62
 msgid "CA certificates"
 msgstr "Certificats de la CA"
 
-#: src/pyams_elastic/interfaces.py:46
+#: src/pyams_elastic/interfaces.py:63
 msgid "Path to certificates of certification authority"
 msgstr "Chemin d'accès aux certificats de l'autorité de certification"
 
-#: src/pyams_elastic/interfaces.py:49
+#: src/pyams_elastic/interfaces.py:66
 msgid "Client certificate"
 msgstr "Certificat client"
 
-#: src/pyams_elastic/interfaces.py:50
+#: src/pyams_elastic/interfaces.py:67
 msgid "Path to PEM file containing client certificate"
 msgstr "Chemin d'accès à un fichier PEM contenant le certificat du client"
 
-#: src/pyams_elastic/interfaces.py:53
+#: src/pyams_elastic/interfaces.py:70
 msgid "Client key"
 msgstr "Clé du certificat"
 
-#: src/pyams_elastic/interfaces.py:54
+#: src/pyams_elastic/interfaces.py:71
 msgid ""
 "Path to PEM file containing client key, if not included with client "
 "certificate"
@@ -70,28 +99,28 @@ msgstr ""
 "Chemin d'accès à un fichier PEM contenant la clé du certificat du client, si "
 "elle n'est pas inclue avec le certificat du client"
 
-#: src/pyams_elastic/interfaces.py:58
+#: src/pyams_elastic/interfaces.py:75
 msgid "Index name"
 msgstr "Nom de l'index"
 
-#: src/pyams_elastic/interfaces.py:59
+#: src/pyams_elastic/interfaces.py:76
 msgid "Elasticsearch index name or pattern"
 msgstr ""
 "Vous pouvez indiquer un nom d'index, ou un motif comme dans \"hearbeat-*\""
 
-#: src/pyams_elastic/interfaces.py:62
+#: src/pyams_elastic/interfaces.py:79
 msgid "Timeout"
 msgstr "Délai d'attente"
 
-#: src/pyams_elastic/interfaces.py:63
+#: src/pyams_elastic/interfaces.py:80
 msgid "Request timeout, in seconds"
 msgstr "Délai d'attente de réponse aux requêtes, en secondes"
 
-#: src/pyams_elastic/interfaces.py:67
+#: src/pyams_elastic/interfaces.py:84
 msgid "Timeout retries"
 msgstr "Nouvelles tentatives"
 
-#: src/pyams_elastic/interfaces.py:68
+#: src/pyams_elastic/interfaces.py:85
 msgid ""
 "You can define the number of retries which can be done if a timeout occurs; "
 "setting this to 0 disable retries"
@@ -188,11 +217,11 @@ msgstr "Nombre maximum d'éléments retournés par une requête"
 msgid "Target connection"
 msgstr "Connexion cible"
 
-#: src/pyams_elastic/task/__init__.py:45
+#: src/pyams_elastic/task/__init__.py:51
 msgid "Elasticsearch query"
 msgstr "Requête Elasticsearch"
 
-#: src/pyams_elastic/task/__init__.py:108
+#: src/pyams_elastic/task/__init__.py:124
 msgid "Elasticsearch re-indexer"
 msgstr "Ré-indexation Elasticsearch"
 
@@ -211,6 +240,15 @@ msgstr "Ré-indexation Elasticsearch"
 #: src/pyams_elastic/task/zmi/__init__.py:173
 msgid "Add Elasticsearch reindex..."
 msgstr "Ré-indexation Elasticsearch"
+
+#~ msgid "Servers"
+#~ msgstr "Serveurs"
+
+#~ msgid "Use SSL?"
+#~ msgstr "Utiliser SSL"
+
+#~ msgid "If 'yes', use SSL for HTTP connection"
+#~ msgstr "Si 'oui', utiliser SSL pour des connexions HTTPS"
 
 #~ msgid "Complete Elasticsearch query, in JSON format"
 #~ msgstr "Texte de la requête Elasticsearch, au format JSON"
