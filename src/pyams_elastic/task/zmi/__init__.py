@@ -29,9 +29,9 @@ from pyams_form.interfaces.form import IForm, IInnerTabForm
 from pyams_form.interfaces.widget import IObjectWidget
 from pyams_form.subform import InnerAddForm, InnerEditForm
 from pyams_layer.interfaces import IFormLayer, IPyAMSLayer
-from pyams_scheduler.interfaces import IScheduler, MANAGE_TASKS_PERMISSION
-from pyams_scheduler.zmi import SchedulerTasksTable
+from pyams_scheduler.interfaces import ITaskContainer, MANAGE_TASKS_PERMISSION
 from pyams_scheduler.task.zmi import BaseTaskAddForm, BaseTaskEditForm
+from pyams_scheduler.zmi import TaskContainerTable
 from pyams_skin.viewlet.menu import MenuItem
 from pyams_utils.adapter import adapter_config
 from pyams_utils.factory import get_interface_name
@@ -39,7 +39,6 @@ from pyams_utils.interfaces.data import IObjectData
 from pyams_viewlet.viewlet import viewlet_config
 from pyams_zmi.interfaces import IAdminLayer
 from pyams_zmi.interfaces.viewlet import IContextAddingsViewletManager
-
 
 __docformat__ = 'restructuredtext'
 
@@ -86,7 +85,7 @@ class ElasticTaskFormInfo(GroupManager):
 
 
 @viewlet_config(name='add-elastic-task.menu',
-                context=IScheduler, layer=IAdminLayer, view=SchedulerTasksTable,
+                context=ITaskContainer, layer=IAdminLayer, view=TaskContainerTable,
                 manager=IContextAddingsViewletManager, weight=110,
                 permission=MANAGE_TASKS_PERMISSION)
 class ElasticTaskAddMenu(MenuItem):
@@ -98,7 +97,7 @@ class ElasticTaskAddMenu(MenuItem):
 
 
 @ajax_form_config(name='add-elastic-task.html',
-                  context=IScheduler, layer=IPyAMSLayer,
+                  context=ITaskContainer, layer=IPyAMSLayer,
                   permission=MANAGE_TASKS_PERMISSION)
 class ElasticTaskAddForm(BaseTaskAddForm):
     """Elasticsearch task add form"""
@@ -110,7 +109,7 @@ class ElasticTaskAddForm(BaseTaskAddForm):
 
 
 @adapter_config(name='elastic-task-info.form',
-                required=(IScheduler, IAdminLayer, ElasticTaskAddForm),
+                required=(ITaskContainer, IAdminLayer, ElasticTaskAddForm),
                 provides=IInnerTabForm)
 class ElasticTaskAddFormInfo(ElasticTaskFormInfo, InnerAddForm):
     """Elasticsearch task add form info"""
@@ -164,7 +163,7 @@ class ElasticReindexTaskFormInfo(GroupManager):
 
 
 @viewlet_config(name='add-elastic-reindex-task.menu',
-                context=IScheduler, layer=IAdminLayer, view=SchedulerTasksTable,
+                context=ITaskContainer, layer=IAdminLayer, view=TaskContainerTable,
                 manager=IContextAddingsViewletManager, weight=115,
                 permission=MANAGE_TASKS_PERMISSION)
 class ElasticReindexTaskAddMenu(MenuItem):
@@ -176,7 +175,7 @@ class ElasticReindexTaskAddMenu(MenuItem):
 
 
 @ajax_form_config(name='add-elastic-reindex-task.html',
-                  context=IScheduler, layer=IPyAMSLayer,
+                  context=ITaskContainer, layer=IPyAMSLayer,
                   permission=MANAGE_TASKS_PERMISSION)
 class ElasticReindexTaskAddForm(BaseTaskAddForm):
     """Elasticsearch reindex task add form"""
@@ -188,7 +187,7 @@ class ElasticReindexTaskAddForm(BaseTaskAddForm):
 
 
 @adapter_config(name='elastic-reindex-task-info.form',
-                required=(IScheduler, IAdminLayer, ElasticReindexTaskAddForm),
+                required=(ITaskContainer, IAdminLayer, ElasticReindexTaskAddForm),
                 provides=IInnerTabForm)
 class ElasticReindexTaskAddFormInfo(ElasticReindexTaskFormInfo, InnerAddForm):
     """Elasticsearch reindex task add form info"""
