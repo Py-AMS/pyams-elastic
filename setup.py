@@ -28,7 +28,7 @@ long_description = open(README).read() + '\n\n' + open(HISTORY).read()
 
 tests_require = [
     'sqlalchemy',
-    'pyams_scheduler',
+    'pyams_scheduler >= 2.3.0',
     'pyams_zmi',
     'pyramid_tm',
     'pyramid_zcml',
@@ -70,6 +70,7 @@ setup(name='pyams_elastic',
           'elasticsearch',
           'elasticsearch_dsl',
           'persistent',
+
           'pyams_utils >= 1.15.0',
           'pyramid',
           'transaction',
