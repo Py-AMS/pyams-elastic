@@ -1,3 +1,5 @@
 [run]
-source = src/pyams_elastic
-omit = src/pyams_elastic/tests/*,src/pyams_elastic/task/zmi/*
+source = pyams_elastic
+omit =
+    */pyams_elastic/tests/*
+    */pyams_elastic/task/zmi/*
