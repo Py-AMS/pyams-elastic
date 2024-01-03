@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.0.2
+-----
+ - updated PyAMS_scheduler interfaces
+ - updated dependencies
+
 2.0.1
 -----
  - updated french translation
