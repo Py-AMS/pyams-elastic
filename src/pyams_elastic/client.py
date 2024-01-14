@@ -27,14 +27,13 @@ from zope.component import getAdapters
 from zope.interface import implementer
 from zope.schema.fieldproperty import FieldProperty
 
-from pyams_utils.dict import DotDict
 from pyams_elastic.interfaces import IElasticClient, IElasticClientInfo, IElasticMapping, \
     IElasticMappingExtension
 from pyams_elastic.query import ElasticQuery
+from pyams_utils.dict import DotDict
 from pyams_utils.factory import factory_config
 from pyams_utils.text import render_text
 from pyams_utils.transaction import TransactionClient, transactional
-
 
 LOGGER = logging.getLogger('PyAMS (elastic)')
 
@@ -102,9 +101,11 @@ class ElasticClientInfo(Persistent):
     def open(self):
         """Open Elasticsearch client"""
         api_key = self.api_key
-        api_key = api_key.split(':', 1) if api_key else None
+        if api_key and (':' in api_key):
+            api_key = api_key.split(':', 1)
         basic_auth = self.basic_auth
-        basic_auth = basic_auth.split(':', 1) if basic_auth else None
+        if basic_auth:
+            basic_auth = basic_auth.split(':', 1)
         return Elasticsearch(self.servers,  # pylint: disable=invalid-name
                              cloud_id=self.cloud_id,
                              api_key=api_key,

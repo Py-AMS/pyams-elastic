@@ -22,7 +22,6 @@ from pyramid.settings import asbool, aslist
 from pyams_elastic.client import ElasticClient
 from pyams_elastic.interfaces import IElasticClient
 
-
 __docformat__ = 'restructuredtext'
 
 
@@ -44,9 +43,11 @@ def client_from_config(settings, prefix='pyams_elastic.', **kwargs):
         return kwargs.get(name, settings.get(f'{prefix}{name}', default))
 
     api_key = get_setting('api_key')
-    api_key = api_key.split(':', 1) if api_key else None
+    if api_key and (':' in api_key):
+        api_key = api_key.split(':', 1)
     basic_auth = get_setting('basic_auth')
-    basic_auth = basic_auth.split(':', 1) if basic_auth else None
+    if basic_auth:
+        basic_auth = basic_auth.split(':', 1)
 
     return ElasticClient(
         servers=aslist(get_setting('servers')),
