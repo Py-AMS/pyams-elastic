@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.0.3
+-----
+ - updated client API key configuration to handle base64 encoded keys and
+   login:password type keys
+
 2.0.2
 -----
  - updated PyAMS_scheduler interfaces
